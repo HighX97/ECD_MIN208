@@ -49,11 +49,9 @@ mysql> desc Mots;
 | tf_min            | int(11)      | YES  |     | NULL    |                |
 | tf_cumule         | int(11)      | YES  |     | NULL    |                |
 | nb_doc            | int(11)      | YES  |     | NULL    |                |
+| df                | int(11)      | YES  |     | 0       |                |
 | idf               | double       | YES  |     | NULL    |                |
-| tf_idfmax         | double       | YES  |     | NULL    |                |
-| tf_idfmin         | double       | YES  |     | NULL    |                |
 | polarite_negative | int(11)      | YES  |     | NULL    |                |
 | polarite_positive | int(11)      | YES  |     | NULL    |                |
 | tree_tagger_tag   | varchar(25)  | YES  |     | NULL    |                |
-| df                | int(11)      | YES  |     | 0       |                |
 +-------------------+--------------+------+-----+---------+----------------+

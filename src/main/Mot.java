@@ -106,7 +106,7 @@ public class Mot
 		this.tf = tf;
 	}
 
-	public double getTf_Pos(int pos) {
+	public int getTf_Pos(int pos) {
 		return tf[pos];
 	}
 
@@ -338,6 +338,13 @@ public class Mot
 	public void addpolarite_positive(int polarite_positive) {
 		this.polarite_positive += polarite_positive;
 	}
+	
+	static int dfCount =0;
+	public int incDf()
+	{
+		System.out.println("incDF"+(++dfCount));
+		return ++df;
+	}
 
 	//Methode
 
@@ -366,6 +373,16 @@ public class Mot
 		sql_insert +="\n";
 		sql_insert += " VALUES " + this.toString();
 		return sql_insert;
+	}
+
+	public int getDf() {
+		return df;
+	}
+
+	public void incTf_pos(int l) 
+	{
+		System.out.println("\t\tINCTF ( "+tf[l]+","+l+")");
+		setTf_Pos(tf[l]+1, l);
 	}
 
 

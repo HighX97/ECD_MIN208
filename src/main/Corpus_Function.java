@@ -181,7 +181,6 @@ public class Corpus_Function
 				{
 					if(words.get(s_remove_stop_caractere) == null)
 					{
-						/*
 						//						writer.println(s_remove_stop_caractere);
 						mots+=s_remove_stop_caractere+"\n";
 						//On insert le mot s dans le dictionnaire des mots "words"
@@ -192,29 +191,40 @@ public class Corpus_Function
 						Mot m = words.get(s_remove_stop_caractere);
 						m.setPolarite(new int[2000]);
 						m.getPolarite()[l]=this.documents[l].getPolarite();
+						m.incDf();
+						m.incTf_pos(l);
 						if (this.documents[l].getPolarite()==1)
 						{
 							m.addpolarite_positive(this.documents[l].getPolarite());
+							System.out.println(m.getValue()+" : Document positif");
 						}
 						else
 						{
 							m.addpolarite_negative(this.documents[l].getPolarite());
+							System.out.println(m.getValue()+" : Document negatif");
 						}
+						//pause(1);
 						//Création d'un instance d'occument (occ,maxOcc) pour la ligne courante
 						Our_occurence occurrence =  new Our_occurence(1, tokens.length);
 						//Affection de l'instance d'occurence au mot
 						m.setOccurrencePos(occurrence, l);
 						//
 						m.getBoolMod()[l]=true;
-						*/
+						if(l%500 == 0)
+						{
+							pause(0.01);
+						}
+
 					}
 					//Si le mot est présent dans le dictionnaire des mots "words"
 					else
 					{
-						
+
 						//Récupération de l'objet mot
 						Mot m = words.get(s_remove_stop_caractere);
 						m.getPolarite()[l]=this.documents[l].getPolarite();
+						m.incDf();
+						m.incTf_pos(l);
 						//Si l'occurence du mot pour la ligne courante est null
 						if(m.getOccurrencePos(l) ==null)
 						{
@@ -232,11 +242,25 @@ public class Corpus_Function
 						}
 						if (this.documents[l].getPolarite()==1)
 						{
-							m.addpolarite_positive(this.documents[l].getPolarite());
+							if (m.getTf_Pos(l) == 1)
+							{
+								System.out.println("========================================================");
+								m.addpolarite_positive(this.documents[l].getPolarite());
+							}
+							System.out.println(m.getValue()+"("+m.getTf_Pos(l)+","+m.getDf()+","+m.getpolarite_positive()+","+m.getpolarite_negative()+") : Document positif");
 						}
 						else
 						{
-							m.addpolarite_negative(this.documents[l].getPolarite());
+							if (m.getTf_Pos(l) == 1)
+							{
+								System.out.println("========================================================");
+								m.addpolarite_negative(this.documents[l].getPolarite());
+							}
+							System.out.println(m.getValue()+"("+m.getTf_Pos(l)+","+m.getDf()+","+m.getpolarite_positive()+","+m.getpolarite_negative()+") : Document negatif");
+						}
+						if(l%500 == 0)
+						{
+							pause(0.01);
 						}
 						//					System.out.println("----");
 						//					System.out.println(m.getOccurrencePos(l).getValue());
@@ -256,81 +280,6 @@ public class Corpus_Function
 	}
 
 
-	public  void boolean_model_Write_Arff()
-	{
-		String booleanModel_Arff = "";
-		List<String> lines_booleanModel_Arff = new ArrayList<String>();
-
-		String relation = "@relation";
-		String relationName = "documents";
-		String attribute = "@attribute";
-		String data = "@data";
-
-		booleanModel_Arff = booleanModel_Arff + relation +" "+ relationName;
-		lines_booleanModel_Arff.add(relation +" "+ relationName);
-		//				System.out.println(booleanModel_Arff);
-		booleanModel_Arff = booleanModel_Arff + "\n";
-		for(Entry<String, Mot> entry_s_m : words.entrySet())
-		{
-			System.out.println("Mot : "+entry_s_m.getValue().getValue()+" STRING");
-			booleanModel_Arff = booleanModel_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
-			lines_booleanModel_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
-		}
-		//				System.out.println(booleanModel_Arff);
-		lines_booleanModel_Arff.add(data);
-		booleanModel_Arff = booleanModel_Arff + "\n";
-		int l;
-//		for (l=0;l<1;l++)
-		for (l=0;l<10;l++)
-		{
-			System.out.println(l);
-			int i=0;
-			String line="";
-			for(Entry<String, Mot> entry_s_m : words.entrySet())
-			{
-				//				if(l%10000 ==0)
-				//				{
-				//					System.out.println("Mot["+i+"/"+l+"] : "+entry_s_m.getValue().getValue());
-				////				System.out.println("Mot["+i+"/"+l+"] : "+entry_s_m.getValue().getValue());
-				//				}
-				if (i==0)
-				{
-					booleanModel_Arff = booleanModel_Arff +"\n"+"{";
-					booleanModel_Arff = booleanModel_Arff + i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
-					line += "\n"+"{";
-					line += i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
-					//						System.out.println(line);
-					//						pause(5);
-				}
-				if (i>0)
-				{
-					booleanModel_Arff += "," + i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
-					line += ","+ i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
-					if (i%77 == 0)
-					{
-						//							System.out.println(line);
-					}
-				}
-				if (i == words.size()-1)
-				{
-					booleanModel_Arff = booleanModel_Arff +"}";
-					line = line +"}";
-					//						System.out.println(line);
-					//						pause(5);
-				}
-				i++;
-			}
-			lines_booleanModel_Arff.add(line);
-			System.out.println(line);
-		}
-		our_file_writer(lines_booleanModel_Arff, "BooleanModel", ".arff", output_path);
-	}
-
-	/*
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	*/
 
 
 
@@ -359,6 +308,7 @@ public class Corpus_Function
 					System.out.println(m.getOccurrencePos(l).getValue());
 					System.out.println(m.getOccurrencePos(l).getMax());
 					System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+					pause(1);
 				}
 				int tf= m.getOccurrencePos(l).getValue(); /// (double) m.getOccurrencePos(l).getMax();
 				tf_cumule+=tf;
@@ -378,11 +328,6 @@ public class Corpus_Function
 				int pos = l;
 				m.setTf_Pos(tf, pos);
 				words.replace(s, m);
-				if(tf>0)
-				{
-					System.out.println("mot : "+entry_s_m.getValue().getValue());
-					System.out.println("tf : "+tf);
-				}
 			}
 		}
 
@@ -503,7 +448,7 @@ public class Corpus_Function
 				if (tf_idfMax < entry_s_m.getValue().getTf_idf_Pos(l))
 				{
 					tf_idfMax = entry_s_m.getValue().getTf_idf_Pos(l);
-					mot.setTf_idfmax(tf_idfMin);				
+					mot.setTf_idfmax(tf_idfMin);
 				}
 				if (entry_s_m.getValue().getTf_idf_Pos(l) >0 && tf_idfMin > entry_s_m.getValue().getTf_idf_Pos(l))
 				{
@@ -522,7 +467,7 @@ public class Corpus_Function
 		System.out.println("tf_idfMin : "+tf_idfMin);
 
 	}
-	
+
 	public  void termWeiting_Doc_Length_Norlamisation()
 	{
 		System.out.println("termWeiting_TF_IDF() : TODO\n");
@@ -602,6 +547,81 @@ public class Corpus_Function
 	}
 
 
+	public  void boolean_model_Write_Arff()
+	{
+		String booleanModel_Arff = "";
+		List<String> lines_booleanModel_Arff = new ArrayList<String>();
+
+		String relation = "@relation";
+		String relationName = "documents";
+		String attribute = "@attribute";
+		String data = "@data";
+
+		booleanModel_Arff = booleanModel_Arff + relation +" "+ relationName;
+		lines_booleanModel_Arff.add(relation +" "+ relationName);
+		//				System.out.println(booleanModel_Arff);
+		booleanModel_Arff = booleanModel_Arff + "\n";
+		for(Entry<String, Mot> entry_s_m : words.entrySet())
+		{
+			System.out.println("Mot : "+entry_s_m.getValue().getValue()+" STRING");
+			booleanModel_Arff = booleanModel_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
+			lines_booleanModel_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+		}
+		//				System.out.println(booleanModel_Arff);
+		lines_booleanModel_Arff.add(data);
+		booleanModel_Arff = booleanModel_Arff + "\n";
+		int l;
+//		for (l=0;l<1;l++)
+		for (l=0;l<10;l++)
+		{
+			System.out.println(l);
+			int i=0;
+			String line="";
+			for(Entry<String, Mot> entry_s_m : words.entrySet())
+			{
+				//				if(l%10000 ==0)
+				//				{
+				//					System.out.println("Mot["+i+"/"+l+"] : "+entry_s_m.getValue().getValue());
+				////				System.out.println("Mot["+i+"/"+l+"] : "+entry_s_m.getValue().getValue());
+				//				}
+				if (i==0)
+				{
+					booleanModel_Arff = booleanModel_Arff +"\n"+"{";
+					booleanModel_Arff = booleanModel_Arff + i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
+					line += "\n"+"{";
+					line += i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
+					//						System.out.println(line);
+					//						pause(5);
+				}
+				if (i>0)
+				{
+					booleanModel_Arff += "," + i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
+					line += ","+ i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
+					if (i%77 == 0)
+					{
+						//							System.out.println(line);
+					}
+				}
+				if (i == words.size()-1)
+				{
+					booleanModel_Arff = booleanModel_Arff +"}";
+					line = line +"}";
+					//						System.out.println(line);
+					//						pause(5);
+				}
+				i++;
+			}
+			lines_booleanModel_Arff.add(line);
+			System.out.println(line);
+		}
+		our_file_writer(lines_booleanModel_Arff, "BooleanModel", ".arff", output_path);
+	}
+
+	/*
+	* -------------------------------------------------------------------------------------------------------------------
+	* -------------------------------------------------------------------------------------------------------------------
+	* -------------------------------------------------------------------------------------------------------------------
+	*/
 
 	/*
 	* -------------------------------------------------------------------------------------------------------------------
@@ -613,7 +633,7 @@ public class Corpus_Function
 	public String remove_stop_caractere(String p_crct)
 	{
 		System.out.println("mot :"+p_crct);
-		String rslt = p_crct.replaceAll("[^a-zA-Z]", "").toLowerCase().trim();
+		String rslt = p_crct.replaceAll("[^a-zA-Z]", " ").toLowerCase().trim();
 		System.out.println("Remove_stop_caractere mot :"+rslt);
 		return rslt;
 		//		Pattern p = Pattern.compile("[^a-zA-Z]");
@@ -684,10 +704,10 @@ public class Corpus_Function
 		}
 	}
 
-	public void pause(int seconde)
+	public void pause(double seconde)
 	{
 		try {
-			Thread.sleep(seconde*1000);                 //5000 milliseconds is five second.
+			Thread.sleep((long) (seconde*1000));                 //5000 milliseconds is five second.
 		} catch(InterruptedException ex) {
 			Thread.currentThread().interrupt();
 		}
@@ -765,16 +785,16 @@ public class Corpus_Function
 		}
 		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting", ".arff", output_path);
 
-		
+
 	}
-	
+
 	/*
 	* -------------------------------------------------------------------------------------------------------------------
 	* -------------------------------------------------------------------------------------------------------------------
 	* -------------------------------------------------------------------------------------------------------------------
 	* -------------------------------------------------------------------------------------------------------------------
 	*/
-	
+
 	public void our_file_writer(String data,String name,String extention,String path)
 	{
 		path = our_path_ctrl(path);
@@ -808,7 +828,7 @@ public class Corpus_Function
 		}
 		return path;
 	}
-	
+
 	public String our_extension_ctrl(String ext)
 	{
 		if (ext.charAt(0) != '.')
@@ -819,8 +839,12 @@ public class Corpus_Function
 		}
 		return ext;
 	}
-	
-	public void our_file_writer(List<String> data, String name, String extention, String path) {
+
+	public void our_file_writer(List<String> data, String name, String extention, String path)
+	{
+
+		System.out.println("our_file_writer - start");
+		pause(5);
 		path = our_path_ctrl(path);
 		extention = our_extension_ctrl(extention);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
@@ -831,11 +855,21 @@ public class Corpus_Function
 			System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
 			writeLargerTextFile(path + name+"_"+dateFormat.format(cal.getTime())+extention,data);
 			System.out.println(path + name+"_"+dateFormat.format(cal.getTime())+extention+"; Done");
+			System.out.println("our_file_writer - stop");
+			pause(5);
+			for (String s : data)
+			{
+				System.out.println(s);
+	//			pause(0.1);
+			}
+	//		pause(5);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("our_file_writer - err");
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public  void mots_Write(Map<String, Mot> mots)
@@ -854,7 +888,7 @@ public class Corpus_Function
 	{
 		JdbcCorpus objJdbcCorpus = new JdbcCorpus();
 		objJdbcCorpus.testDb();
-		
+
 		List<String> lines = new ArrayList<String>();
 		int resultInsert;
 		for(Entry<String, Mot> entry_s_m : mots.entrySet())
@@ -863,8 +897,26 @@ public class Corpus_Function
 			System.out.println(mot.insertSql());
 			lines.add(mot.insertSql());
 			resultInsert = objJdbcCorpus.executeUpdate(mot.insertSql());
-			System.out.println("resultInsert: " + resultInsert);	
+			System.out.println("resultInsert: " + resultInsert);
 		}
+	}
+
+	public  void document_Write_Arff()
+	{
+		System.out.println("termWeiting_Write_Arff() : start succeded");
+		List<String> lines = new ArrayList<String>();
+		lines.add("@relation movies");
+		lines.add("@attribute att_avis STRING");
+		lines.add("@attribute att_thought {-1,1}");
+		lines.add("@data");
+		int l;
+		for (l=0;l<documents.length;l++)
+		{
+			String line="'"+remove_stop_caractere(documents[l].getAvis())+"'"+","+documents[l].getPolarite()+"\n";
+			System.out.println(line);
+			lines.add(line);
+		}
+		our_file_writer(lines, "CorpusMovies", ".arff", output_path);
 	}
 
 }

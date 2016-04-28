@@ -104,6 +104,13 @@ public class Corpus
 		List<Our_path_model> p = new ArrayList<Our_path_model>();
 		documents = crp_fnc.input(p);
 		System.out.println("input() : succeeded\n");
+		
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_ARFF DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		System.out.println("documentw_Write_Arff() : start\n");
+
+		crp_fnc.pause(5);
+		crp_fnc.document_Write_Arff();
+		System.out.println("documentw_Write_Arff() : succeeded\n");
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LOAD AND STORE MOTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_LOAD AND STORE MOTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -124,8 +131,8 @@ public class Corpus
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~REMOVE STOP WORD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~00_02_REMOVE STOP WORD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		System.out.println("remove_stop_words(stopwords) : start\n");
+//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~00_02_REMOVE STOP WORD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//		System.out.println("remove_stop_words(stopwords) : start\n");
 		List<String> stopwords = new ArrayList<String>();
 		stopwords.add("a");
 		stopwords.add("about");
@@ -447,9 +454,9 @@ public class Corpus
 		stopwords.add("yourselves");
 		stopwords.add("the");
 
-		crp_fnc.pause(5);
-		crp_fnc.remove_stop_words(stopwords);
-		System.out.println("remove_stop_words(stopwords) : succeeded\n");
+//		crp_fnc.pause(5);
+//		crp_fnc.remove_stop_words(stopwords);
+//		System.out.println("remove_stop_words(stopwords) : succeeded\n");
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TERME FREQUENCY~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
