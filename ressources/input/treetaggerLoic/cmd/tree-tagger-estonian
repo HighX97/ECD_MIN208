@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Set these paths appropriately
+
+BIN=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/bin
+CMD=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/cmd
+LIB=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/lib
+
+OPTIONS="-token -lemma -sgml"
+
+TOKENIZER=${CMD}/utf8-tokenize.perl
+MWL=${CMD}/mwl-lookup.perl
+TAGGER=${BIN}/tree-tagger
+ABBR_LIST=${LIB}/estonian-abbreviations-utf8
+PARFILE=${LIB}/estonian-utf8.par
+MWLFILE=${LIB}/estonian-mwls-utf8
+
+$TOKENIZER -a $ABBR_LIST $* |
+# recognition of MWLs
+$MWL -f $MWLFILE |
+# tagging
+$TAGGER $OPTIONS $PARFILE
+

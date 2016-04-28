@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Set these paths appropriately
+
+BIN=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/bin
+CMD=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/cmd
+LIB=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/lib
+
+TOKENIZER=${BIN}/separate-punctuation
+SPLITTER=${CMD}/portuguese-splitter.perl
+TAGGER=${BIN}/tree-tagger
+ABBR_LIST=${LIB}/portuguese-abbreviations-utf8
+POST_TAGGING=${CMD}/portuguese-post-tagging
+PARFILE=${LIB}/portuguese-finegrained-utf8.par
+
+# splitting 
+$SPLITTER $* |
+# pre-tokenization
+sed "s/\([\)\"\'\?\!]\)\([\.\,\;\:]\)/ \1 \2/g" |
+# tokenizing
+$TOKENIZER +1 +s +l $ABBR_LIST |
+# remove empty lines
+grep -v '^$' |
+# tagging
+$TAGGER $PARFILE -token -lemma -sgml | 
+$POST_TAGGING -yes

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Set these paths appropriately
+
+BIN=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/bin
+CMD=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/cmd
+LIB=/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/TreeTagger/lib
+
+OPTIONS="-token -lemma -sgml"
+
+TOKENIZER=${CMD}/utf8-tokenize.perl
+TAGGER=${BIN}/tree-tagger
+ABBR_LIST=${LIB}/english-abbreviations
+PARFILE=${LIB}/english-utf8.par
+
+$TOKENIZER -e -a $ABBR_LIST $* |
+# remove empty lines
+grep -v '^$' |
+# tagging
+$TAGGER $OPTIONS $PARFILE | 
+perl -pe 's/\tV[BDHV]/\tVB/;s/\tIN\/that/\tIN/;'
