@@ -91,6 +91,7 @@ public class Corpus
 //				break;
 //		}
 		
+		
 		documents = new Document[2000];
 		words = new HashMap<String, Mot>();
 		crp_fnc = new Corpus_Function();
