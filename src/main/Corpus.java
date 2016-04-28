@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+import org.annolab.tt4j.TreeTaggerException;
+
+import db_JDBC.MotModel;
 
 //import weka.classifiers.Classifier;
 //import weka.classifiers.Evaluation;
@@ -34,7 +39,7 @@ import java.util.concurrent.Callable;
 //
 public class Corpus
 {
-	static public Opinion[] opinions;
+	static public Document[] documents;
 	static public Map<String, Mot> words;
 	static public Corpus_Function crp_fnc;
 
@@ -49,27 +54,70 @@ public class Corpus
 	//		corpus.
 	//	}
 
-	public static void main(String [] args)
+	public static void main(String [] args) throws IOException, TreeTaggerException
 	{
-		opinions = new Opinion[2000];
+//		Lemmatisation objLemmatisation = new Lemmatisation();
+//		List<String> listeMotsTmp = Arrays.asList(new String[] { "sjahsjhk", "is", "has", "a" });
+//		HashMap<String, String> resultatLemmatisation1 = objLemmatisation.obtenirListLemattise(listeMotsTmp);
+//		if ( true ) {
+//			System.out.println("Après lematisation:" + resultatLemmatisation1.size());
+//	        return;
+//	    }
+//		
+//		MotModel objMotmodel = new MotModel();
+//		String option = "";
+//		
+//		switch(option){
+//			case "getListMotsFromDb":
+//				List<String> listWords = objMotmodel.getListMotsFromDb();
+//				for(String word : listWords ){
+//					System.out.println(word);
+//				}
+//				return;
+//				//break;
+//			case "CreateWordInsertions":
+//				crp_fnc = new Corpus_Function();
+//				List<Our_path_model> p = new ArrayList<Our_path_model>();
+//				
+//				crp_fnc.words = objMotmodel.getCollectionsMotsFromDb();
+//				crp_fnc.input(p);
+//				crp_fnc.termWeiting_TF();
+//				crp_fnc.termWeiting_IDF();
+//				crp_fnc.termWeiting_TF_IDF();
+//				crp_fnc.termWeiting_Write_Arff(crp_fnc.words);
+//				return;
+//			default:
+//				
+//				break;
+//		}
+		
+		documents = new Document[2000];
 		words = new HashMap<String, Mot>();
 		crp_fnc = new Corpus_Function();
 
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LOAD AND STORE DATA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~00_LOAD AND STORE DATA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LOAD AND STORE DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~00_LOAD AND STORE DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		System.out.println("input() : start\n");
 
 		crp_fnc.pause(5);
 		List<Our_path_model> p = new ArrayList<Our_path_model>();
-		crp_fnc.input(p);
+		documents = crp_fnc.input(p);
 		System.out.println("input() : succeeded\n");
 
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LOAD AND STORE MOTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_LOAD AND STORE MOTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		System.out.println("find_words() : start\n");
 
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		crp_fnc.pause(5);
-		crp_fnc.boolean_model_Write_Arff();
-		System.out.println("boolean_model_Write_Arff() : succeeded\n");
+		words = crp_fnc.find_words(documents);
+		System.out.println("find_words() : succeeded\n");
+
+
+//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//		crp_fnc.pause(5);
+//		crp_fnc.boolean_model_Write_Arff();
+//		System.out.println("boolean_model_Write_Arff() : succeeded\n");
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -423,6 +471,9 @@ public class Corpus
 		crp_fnc.pause(5);
 		crp_fnc.termWeiting_TF_IDF();
 		System.out.println("termWeiting_TF_IDF() : succeeded\n");
+		
+		crp_fnc.mots_Write(crp_fnc.words);
+		//crp_fnc.mots_Write_MYSQL(crp_fnc.words);
 
 
 //		//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DOCUMENT LENGTH NORMALIZATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -430,12 +481,12 @@ public class Corpus
 //		crp_fnc.termWeiting_Doc_Length_Norlamisation();
 //		crp_fnc.pause(5);
 
-				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_05_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		System.out.println("termWeiting_Write_Arff() : start\n");
-		crp_fnc.pause(5);
-		crp_fnc.termWeiting_Write_Arff();
-		System.out.println("termWeiting_Write_Arff() : succeeded\n");
+//				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_05_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//		System.out.println("termWeiting_Write_Arff() : start\n");
+//		crp_fnc.pause(5);
+//		crp_fnc.termWeiting_Write_Arff();
+//		System.out.println("termWeiting_Write_Arff() : succeeded\n");
 		//
 		//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Weka~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~03_WEKA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");

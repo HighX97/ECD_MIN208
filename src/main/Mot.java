@@ -1,24 +1,37 @@
 package main;
+
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Mot 
+public class Mot
 {
 	//Attributs
 	//Member
 	private int id;
 	private String value;
-	private boolean[] boolMod;
-	private double[] tf;
+	private int tf_max;
+	private int tf_min;
+	private int tf_cumule;
+	private int df;
 	private double idf;
+	private double tf_idfmax;
+	private double tf_idfmin;
+	private int polarite_negative;
+	private int polarite_positive;
+
+
+	private boolean[] boolMod; Our_occurence[] occurrence;
+	private int[] tf;
 	private double[] tf_idf;
-	private Our_occurence[] occurrence;
 	private int occurrenceTotal;
-	private int nbDoc;
+	
+	private int[] polarite;
+
 	//Classe
 	private static int count=0;
-	
+
 	//
 	Mot()
 	{
@@ -26,30 +39,48 @@ public class Mot
 		setOccurrenceTotal(0);
 		occurrence=new Our_occurence[2000];
 		boolMod = new boolean[2000];
-		tf=new double[2000];
+		tf=new int[2000];
 		tf_idf=new double[2000];
-		nbDoc=0;
+		df=0;
 		occurrenceTotal=0;
+		value="";
+		tf_max=0;
+		tf_min=Integer.MAX_VALUE;
+		tf_cumule=0;
+		idf=0.0;
+		tf_idfmax=0.0;
+		tf_idfmin=(double) Integer.MAX_VALUE;
+		polarite_negative=0;
+		polarite_positive=0;
+		polarite = new int[2000];
 	}
-	
+
 	Mot(String value)
 	{
 		this();
 		this.setValue(value);
 	}
-	
+
 	Mot(Mot mot)
 	{
 		this();
 		this.setValue(mot.getValue());
 	}
 	
-
-	public Mot(int id2, String value2, int tf_max, int tf_min, int tf_cumule,
-			int df, double idf2, double tf_idfmax, double tf_idfmin,
-			int polarite_negative, int polarite_positive) {
-		// TODO Auto-generated constructor stub
+	public Mot(int id, String value, int tf_max, int tf_min, int tf_cumule, int df, double idf, double tf_idfmax, double tf_idfmin, int polarite_negative, int polarite_positive){
+		this();
+		this.value = value;
+		this.tf_max = tf_max;
+		this.tf_min = tf_min;
+		this.tf_cumule = tf_cumule;
+		this.df = df;
+		this.idf = idf;
+		this.tf_idfmax = tf_idfmax;
+		this.tf_idfmin = tf_idfmin;
+		this.polarite_negative = polarite_negative;
+		this.polarite_positive = polarite_positive;
 	}
+
 
 	public int getId() {
 		return id;
@@ -67,19 +98,19 @@ public class Mot
 		this.value = value;
 	}
 
-	public double[] getTf() {
+	public int[] getTf() {
 		return tf;
 	}
 
-	public void setTf(double[] tf,int pos) {
+	public void setTf(int[] tf,int pos) {
 		this.tf = tf;
 	}
-	
+
 	public double getTf_Pos(int pos) {
 		return tf[pos];
 	}
 
-	public void setTf_Pos(double tf,int pos) {
+	public void setTf_Pos(int tf,int pos) {
 		this.tf[pos] = tf;
 	}
 
@@ -94,12 +125,12 @@ public class Mot
 	public Our_occurence[] getOccurrence() {
 		return occurrence;
 	}
-	
+
 	public Our_occurence getOccurrencePos(int pos) {
 		return occurrence[pos];
 	}
-	
-	public void setOccurrencePos(Our_occurence occurrence, int pos) 
+
+	public void setOccurrencePos(Our_occurence occurrence, int pos)
 	{
 		this.occurrence[pos] = occurrence;
 		this.setOccurrenceTotal(this.getOccurrenceTotal()+occurrence.getValue());
@@ -108,24 +139,17 @@ public class Mot
 	public void setOccurrence(Our_occurence[] occurrence) {
 		this.occurrence = occurrence;
 	}
-	public void innOccurrence(int pos) 
+	public void innOccurrence(int pos)
 	{
 		this.occurrence[pos].setValue(this.occurrence[pos].getValue() + 1);
 		incOccurrenceTotal();
 	}
 	
-	//Methode
-	
-	public String toString()
-	{
-		return "MOT["+this.getId()+"] = "+" Val:"+this.getValue()+" Occ:"+this.getOccurrence()+" Idf:"+this.getIdf()+" Tf:"+this.getTf()+" Tf_Idf:"+this.getTf_idf();
-	}
-
 	public double[] getTf_idf() {
 		return tf_idf;
 	}
-	
-	public double getTf_idf_Pos(int pos) 
+
+	public double getTf_idf_Pos(int pos)
 	{
 		return tf_idf[pos];
 	}
@@ -144,26 +168,26 @@ public class Mot
 	public void setOccurrenceTotal(int occurrenceTotal) {
 		this.occurrenceTotal = occurrenceTotal;
 	}
-	
+
 	public void incOccurrenceTotal() {
 		this.occurrenceTotal++;
 	}
 
 	public int getNbDoc() {
-		return nbDoc;
+		return df;
 	}
 
 	public void setNbDoc(int nbDoc) {
-		this.nbDoc = nbDoc;
+		this.df = nbDoc;
 	}
 	public void incNbDoc() {
-		this.nbDoc++;
+		this.df++;
 	}
 
 	public boolean[] getBoolMod() {
 		return boolMod;
 	}
-	
+
 	public int getBoolMod_Pos_Int(int pos) {
 		if (boolMod[pos])
 		{
@@ -176,6 +200,176 @@ public class Mot
 	public void setBoolMod(boolean[] boolMod) {
 		this.boolMod = boolMod;
 	}
+
+		public int[] getPolarite() {
+		return polarite;
+	}
+
+	public void setPolarite(int[] polarite) {
+		this.polarite = polarite;
+	}
+
+	public int getTf_max() {
+		return tf_max;
+	}
+
+	public void setTf_max(int tf_max)
+	{
+		this.tf_max = tf_max;
+	}
+
+	public int calcTf_max()
+	{
+		int i;
+		int tfmax=0;
+		for(i=0;i<this.tf.length;i++)
+		{
+			if (tf[i]>0 & tf[i]>this.tf_max)
+			{
+				tfmax = tf[i];
+				this.setTf_max(tf[i]);
+			}
+		}
+		return tfmax;
+	}
+
+	public int getTf_min() {
+		return tf_min;
+	}
+
+	public void setTf_min(int tf_min) {
+		this.tf_min = tf_min;
+	}
+
+	public int calcTf_min()
+	{
+		int i;
+		int tfmin=0;
+		for(i=0;i<this.tf.length;i++)
+		{
+			if (tf[i]>0 & tf[i]>this.tf_min)
+			{
+				tfmin = tf[i];
+				this.setTf_min(tf[i]);
+			}
+		}
+		return tfmin;
+	}
+
+	public int getTf_cumule() {
+		return tf_cumule;
+	}
+
+	public void setTf_cumule(int tf_cumule) {
+		this.tf_cumule = tf_cumule;
+	}
+
+	public int calcTf_cumule()
+	{
+		int i;
+		int tf_cumule=0;
+		for(i=0;i<this.tf.length;i++)
+		{
+				tf_cumule += tf[i];
+				this.setTf_cumule(this.getTf_cumule()+tf[i]);
+		}
+		return tf_cumule;
+	}
+
+	public double getTf_idfmin() {
+		return tf_idfmin;
+	}
+
+	public void setTf_idfmin(double tf_idfmin) {
+		this.tf_idfmin = tf_idfmin;
+	}
+
+	public int calcTf_idfmin()
+	{
+		int i;
+		int tf_idfmin=0;
+		for(i=0;i<this.tf.length;i++)
+		{
+				tf_idfmin += tf[i];
+				this.setTf_idfmin(this.getTf_idfmin()+tf[i]);
+		}
+		return tf_idfmin;
+	}
+
+	public double getTf_idfmax() {
+		return tf_idfmax;
+	}
+
+	public void setTf_idfmax(double tf_idfmax) {
+		this.tf_idfmax = tf_idfmax;
+	}
+
+	public int calcTf_idfmax()
+	{
+		int i;
+		int tf_idfmax=0;
+		for(i=0;i<this.tf.length;i++)
+		{
+				tf_idfmax += tf[i];
+				this.setTf_idfmax(this.getTf_idfmax()+tf[i]);
+		}
+		return tf_idfmax;
+	}
+
+	public int getpolarite_negative() {
+		return polarite_negative;
+	}
+
+	public void setpolarite_negative(int polarite_negative) {
+		this.polarite_negative = polarite_negative;
+	}
+	public void addpolarite_negative(int polarite_negative) {
+		this.polarite_negative += polarite_negative;
+	}
+
+	public int getpolarite_positive() {
+		return polarite_positive;
+	}
+
+	public void setpolarite_positive(int polarite_positive) {
+		this.polarite_positive = polarite_positive;
+	}
+
+	public void addpolarite_positive(int polarite_positive) {
+		this.polarite_positive += polarite_positive;
+	}
+
+	//Methode
+
+	public String toString()
+	{
+		String mot_to_string="(";
+		//mot_to_string+=id +" , ";
+		mot_to_string+="\""+value+"\" , ";
+		mot_to_string+=tf_max+" , ";
+		mot_to_string+=tf_min+" , ";
+		mot_to_string+=tf_cumule+" , ";
+		mot_to_string+=df+" , ";
+		mot_to_string+=idf+" , ";
+		mot_to_string+=tf_idfmax+" , ";
+		mot_to_string+=tf_idfmin+" , ";
+		mot_to_string+=polarite_negative+" , ";
+		mot_to_string+=polarite_positive+")";
+		return mot_to_string;
+	}
+	public String insertSql()
+	{
+		String nameTable="Mots";
+		String sql_insert = "INSERT INTO "+nameTable;
+		sql_insert +="\n";
+		sql_insert +="(value,tf_max,tf_min,tf_cumule,df,idf,tf_idfmax,tf_idfmin,polarite_negative,polarite_positive)";
+		sql_insert +="\n";
+		sql_insert += " VALUES " + this.toString();
+		return sql_insert;
+	}
+
+
+
 
 
 }

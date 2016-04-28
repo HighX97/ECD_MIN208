@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class Opinion 
+public class Document 
 {
 	//Attributs
 	//Member
@@ -18,23 +18,23 @@ public class Opinion
 	private int count=0;
 	
 	//Constructeur
-	Opinion()
+	Document()
 	{
 		this.id = getCount();
 //		this.avis_mots = new HashMap<String, Mot>();
 		setCount(getCount() + 1);
 	}
-	Opinion(int polarite)
+	Document(int polarite)
 	{
 		this();
 		this.setPolarite(polarite);
 	}
-	Opinion(String avis)
+	Document(String avis)
 	{
 		this();
 		this.avis = avis;
 	}
-	Opinion(String avis, int polarite)
+	Document(String avis, int polarite)
 	{
 		this(avis);
 		this.setPolarite(polarite);

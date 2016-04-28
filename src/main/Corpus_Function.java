@@ -22,23 +22,26 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import db_JDBC.JdbcCorpus;
+
 
 public class Corpus_Function
 {
 	//Champs
-	public Opinion[] opinions;
+	public Document[] documents;
 	public Map<String, Mot> words;
+	public String output_path = "ressources/output";
 
 	//Constructeurs
 	Corpus_Function()
 	{
-		opinions = new Opinion[2000];
+		documents = new Document[2000];
 		words = new HashMap<String, Mot>();
 	}
 
-	Corpus_Function(Opinion[] opinions, Map<String, Mot> words)
+	Corpus_Function(Document[] documents, Map<String, Mot> words)
 	{
-		this.opinions = opinions;
+		this.documents = documents;
 		this.words = words;
 	}
 
@@ -50,7 +53,7 @@ public class Corpus_Function
 	*/
 
 	//Read input documents
-	public  Opinion[] input(List<Our_path_model> path_model)
+	public  Document[] input(List<Our_path_model> path_model)
 	{
 		String csvFilePolarite = "ressources/labels.csv";
 		String csvFileAvis = "ressources/dataset.csv";
@@ -74,7 +77,7 @@ public class Corpus_Function
 				String[] avis = line.split(cvsSplitBy);
 				//Création d'un option à partir de l'avis sur le document k.
 				//La polarité de l'avis sera récupépéré lors de la lecture du document label.csv
-				opinions[k] = new Opinion(avis[0]);
+				documents[k] = new Document(avis[0]);
 				//On incremente k pour la prochaine ligne
 				k++;
 			}
@@ -114,8 +117,8 @@ public class Corpus_Function
 			{
 				//Récupération de la polarité sur le document k
 				String[] polarite = line.split(cvsSplitBy);
-				//Affectation de la polarité à l'opinion k créé ci-dessus
-				opinions[k].setPolarite(Integer.parseInt(polarite[0]));
+				//Affectation de la polarité à l'document k créé ci-dessus
+				documents[k].setPolarite(Integer.parseInt(polarite[0]));
 				//On incremente k pour la prochaine ligne
 				k++;
 			}
@@ -140,7 +143,7 @@ public class Corpus_Function
 		}
 		System.out.println("Import suceeded");
 
-		return opinions;
+		return documents;
 	}
 	/*
 	* -------------------------------------------------------------------------------------------------------------------
@@ -149,20 +152,23 @@ public class Corpus_Function
 	* -------------------------------------------------------------------------------------------------------------------
 	*/
 
-	public Map<String, Mot> find_words(Opinion[] opinions)
+	public Map<String, Mot> find_words(Document[] documents)
 	{
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IDENTIFICATION DES MOTS PRÉSENT DANS LES DOCUMENTS DU CORPUS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 		System.out.println("words.size() before : "+words.size());
-		this.pause(2);
+		this.pause(5);
 		//Pour chaque document du texte
+		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+		Calendar cal = Calendar.getInstance();
+		System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
+		PrintWriter writer;
 		String mots ="";
 
-		for (int l=0;l<2000;l++)
+		for (int l=0;l<this.documents.length;l++)
 		{
-			//Pour l'opinion du document l
-			//Pour l'avis de l'opinion du document l
-			String phrase = opinions[l].getAvis();
+			//Pour l'Document du document l
+			//Pour l'avis de l'Document du document l
+			String phrase = documents[l].getAvis();
 			String delims = "[ ]+";
 			String[] tokens = phrase.split(delims);
 
@@ -171,28 +177,44 @@ public class Corpus_Function
 			{
 				String s_remove_stop_caractere = remove_stop_caractere(s);
 				//Si le mot n'est pas encore présent dans le dictionnaire des mots "words"
-				if(s_remove_stop_caractere.length() >2)
+				if(s_remove_stop_caractere.length() >1)
 				{
 					if(words.get(s_remove_stop_caractere) == null)
 					{
+						/*
 						//						writer.println(s_remove_stop_caractere);
 						mots+=s_remove_stop_caractere+"\n";
 						//On insert le mot s dans le dictionnaire des mots "words"
 
+
+
 						words.put(s_remove_stop_caractere,new Mot(s_remove_stop_caractere));
 						Mot m = words.get(s_remove_stop_caractere);
+						m.setPolarite(new int[2000]);
+						m.getPolarite()[l]=this.documents[l].getPolarite();
+						if (this.documents[l].getPolarite()==1)
+						{
+							m.addpolarite_positive(this.documents[l].getPolarite());
+						}
+						else
+						{
+							m.addpolarite_negative(this.documents[l].getPolarite());
+						}
 						//Création d'un instance d'occument (occ,maxOcc) pour la ligne courante
 						Our_occurence occurrence =  new Our_occurence(1, tokens.length);
 						//Affection de l'instance d'occurence au mot
 						m.setOccurrencePos(occurrence, l);
 						//
 						m.getBoolMod()[l]=true;
+						*/
 					}
 					//Si le mot est présent dans le dictionnaire des mots "words"
 					else
 					{
-						//Récupération de l'objet mort
+						
+						//Récupération de l'objet mot
 						Mot m = words.get(s_remove_stop_caractere);
+						m.getPolarite()[l]=this.documents[l].getPolarite();
 						//Si l'occurence du mot pour la ligne courante est null
 						if(m.getOccurrencePos(l) ==null)
 						{
@@ -208,43 +230,29 @@ public class Corpus_Function
 							//Incrémentation de l'instance d'occurence du mot
 							m.innOccurrence(l);
 						}
+						if (this.documents[l].getPolarite()==1)
+						{
+							m.addpolarite_positive(this.documents[l].getPolarite());
+						}
+						else
+						{
+							m.addpolarite_negative(this.documents[l].getPolarite());
+						}
 						//					System.out.println("----");
 						//					System.out.println(m.getOccurrencePos(l).getValue());
 						//					System.out.println(m.getOccurrenceTotal());
 					}
 					//					writer.close();
 				}
+
 			}
 		}
-		String output_path = "ressources/output/";
 		String file_name = "CorpusWord";
 		String extention = "txt";
 		our_file_writer(mots,file_name,extention,output_path);
 		System.out.println("words.size() after : "+words.size());
 		pause(5);
 		return words;
-	}
-
-	public void our_file_writer(String data,String name,String extention,String path)
-	{
-		//if (path.charAt(path.length -1).)
-		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-		Calendar cal = Calendar.getInstance();
-		System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
-		PrintWriter writer;
-		try {
-			writer = new PrintWriter(path+name+"_"+dateFormat.format(cal.getTime())+"."+extention, "UTF-8");
-			writer.println(data);
-			writer.close();
-			System.out.println(name+"_"+dateFormat.format(cal.getTime())+"."+extention+" writed in "+path);
-		}
-		catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 
@@ -254,7 +262,7 @@ public class Corpus_Function
 		List<String> lines_booleanModel_Arff = new ArrayList<String>();
 
 		String relation = "@relation";
-		String relationName = "opinions";
+		String relationName = "documents";
 		String attribute = "@attribute";
 		String data = "@data";
 
@@ -315,18 +323,7 @@ public class Corpus_Function
 			lines_booleanModel_Arff.add(line);
 			System.out.println(line);
 		}
-		try {
-			System.out.println("writeLargerTextFile(\"opinion_terme_weiting.arff\",lines_booleanModel_Arff); Do");
-			DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-			Calendar cal = Calendar.getInstance();
-			System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
-			writeLargerTextFile("opinion_booleanModel"+dateFormat.format(cal.getTime())+".arff",lines_booleanModel_Arff);
-			System.out.println("writeLargerTextFile(\"opinion_terme_weiting.arff\",lines_booleanModel_Arff); Done");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		our_file_writer(lines_booleanModel_Arff, "BooleanModel", ".arff", output_path);
 	}
 
 	/*
@@ -336,10 +333,14 @@ public class Corpus_Function
 	*/
 
 
+
 	public  void termWeiting_TF()
 	{
 		for(Entry<String, Mot> entry_s_m : words.entrySet())
 		{
+			int tf_cumule=0;
+			int tf_max=0;
+			int tf_min=Integer.MAX_VALUE;
 			String s = entry_s_m.getKey();
 			Mot m = words.get(s);
 			Our_occurence occurrencenull =  new Our_occurence(0, 1);
@@ -359,7 +360,21 @@ public class Corpus_Function
 					System.out.println(m.getOccurrencePos(l).getMax());
 					System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 				}
-				double tf=(double) m.getOccurrencePos(l).getValue() / (double) m.getOccurrencePos(l).getMax();
+				int tf= m.getOccurrencePos(l).getValue(); /// (double) m.getOccurrencePos(l).getMax();
+				tf_cumule+=tf;
+				m.setTf_cumule(tf_cumule);
+				if (tf > tf_max)
+				{
+					tf_max = tf;
+					m.setTf_max(tf_max);
+					System.out.println("max"+m);
+				}
+				if (tf < tf_min && tf > 0)
+				{
+					tf_min = tf;
+					m.setTf_min(tf_min);
+					System.out.println("min"+m);
+				}
 				int pos = l;
 				m.setTf_Pos(tf, pos);
 				words.replace(s, m);
@@ -472,6 +487,7 @@ public class Corpus_Function
 		int l;
 		for(Entry<String, Mot> entry_s_m : words.entrySet())
 		{
+			Mot mot = entry_s_m.getValue();
 			for (l=0;l<2000;l++)
 			{
 				entry_s_m.getValue().setIdf(words.get(entry_s_m.getKey()).getIdf());
@@ -487,10 +503,12 @@ public class Corpus_Function
 				if (tf_idfMax < entry_s_m.getValue().getTf_idf_Pos(l))
 				{
 					tf_idfMax = entry_s_m.getValue().getTf_idf_Pos(l);
+					mot.setTf_idfmax(tf_idfMin);				
 				}
 				if (entry_s_m.getValue().getTf_idf_Pos(l) >0 && tf_idfMin > entry_s_m.getValue().getTf_idf_Pos(l))
 				{
 					tf_idfMin = entry_s_m.getValue().getTf_idf_Pos(l);
+					mot.setTf_idfmin(tf_idfMin);
 				}
 				if (entry_s_m.getValue().getTf_idf_Pos(l)>0)
 				{
@@ -504,7 +522,7 @@ public class Corpus_Function
 		System.out.println("tf_idfMin : "+tf_idfMin);
 
 	}
-
+	
 	public  void termWeiting_Doc_Length_Norlamisation()
 	{
 		System.out.println("termWeiting_TF_IDF() : TODO\n");
@@ -518,7 +536,7 @@ public class Corpus_Function
 		List<String> lines_termWeiting_Arff = new ArrayList<String>();
 
 		String relation = "@relation";
-		String relationName = "opinions";
+		String relationName = "documents";
 		String attribute = "@attribute";
 		String data = "@data";
 
@@ -579,17 +597,7 @@ public class Corpus_Function
 			lines_termWeiting_Arff.add(line);
 			System.out.println(line);
 		}
-		try {
-			System.out.println("writeLargerTextFile(\"opinion_terme_weiting.arff\",lines_termWeiting_Arff); Do");
-			DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-			Calendar cal = Calendar.getInstance();
-			System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
-			writeLargerTextFile("opinion_terme_weiting_"+dateFormat.format(cal.getTime())+".arff",lines_termWeiting_Arff);
-			System.out.println("writeLargerTextFile(\"opinion_terme_weiting.arff\",lines_termWeiting_Arff); Done");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting", ".arff", output_path);
 
 	}
 
@@ -626,7 +634,7 @@ public class Corpus_Function
 	public  void remove_stop_words(List<String> stop_words)
 	{
 		System.out.println("words.size() :"+words.size());
-//		for (Opinion op : opinions)
+//		for (Document op : documents)
 //		{
 			for(String s : stop_words)
 			{
@@ -663,97 +671,6 @@ public class Corpus_Function
 
 
 
-	void weka()
-	{
-		//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WEKA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		//		//https://weka.wikispaces.com/Programmatic+Use
-		//		// Declare two numeric attributes
-		//		Attribute Attribute1 = new Attribute("firstNumeric");
-		//		System.out.println("Attribute1 : "+Attribute1);
-		//		Attribute Attribute2 = new Attribute("secondNumeric");
-		//		System.out.println("Attribute2 : "+Attribute2);
-		//
-		//		// Declare a nominal attribute along with its values
-		//		FastVector fvNominalVal = new FastVector(3);
-		//		fvNominalVal.addElement("blue");
-		//		fvNominalVal.addElement("gray");
-		//		fvNominalVal.addElement("black");
-		//		System.out.println("fvNominalVal : "+fvNominalVal);
-		//		Attribute Attribute3 = new Attribute("aNominal", fvNominalVal);
-		//		System.out.println("Attribute3 : "+Attribute3);
-		//
-		//		// Declare the class attribute along with its values
-		//		FastVector fvClassVal = new FastVector(2);
-		//		fvClassVal.addElement("positive");
-		//		fvClassVal.addElement("negative");
-		//		System.out.println("fvClassVal : "+fvClassVal);
-		//		Attribute ClassAttribute = new Attribute("theClass", fvClassVal);
-		//		System.out.println("ClassAttribute : "+ClassAttribute);
-		//
-		//		// Declare the feature vector
-		//		FastVector fvWekaAttributes = new FastVector(4);
-		//		fvWekaAttributes.addElement(Attribute1);
-		//		fvWekaAttributes.addElement(Attribute2);
-		//		fvWekaAttributes.addElement(Attribute3);
-		//		fvWekaAttributes.addElement(ClassAttribute);
-		//		System.out.println("fvWekaAttributes : "+fvWekaAttributes);
-		//
-		//		// Create an empty training set
-		//		Instances isTrainingSet = new Instances("Rel", fvWekaAttributes, 10);
-		//		System.out.println("----------------------------------------------------------------------");
-		//		System.out.println("isTrainingSet : "+isTrainingSet);
-		//		// Set class index
-		//		isTrainingSet.setClassIndex(3);
-		//		System.out.println("----------------------------------------------------------------------");
-		//		System.out.println("isTrainingSet : "+isTrainingSet);
-		//
-		//		// Create the instance
-		//		Instance iExample = new Instance(4);
-		//		iExample.setValue((Attribute)fvWekaAttributes.elementAt(0), 1.0);
-		//		iExample.setValue((Attribute)fvWekaAttributes.elementAt(1), 0.5);
-		//		iExample.setValue((Attribute)fvWekaAttributes.elementAt(2), "gray");
-		//		iExample.setValue((Attribute)fvWekaAttributes.elementAt(3), "positive");
-		//		// add the instance
-		// 		isTrainingSet.add(iExample);
-		// 		System.out.println("----------------------------------------------------------------------");
-		//		System.out.println("isTrainingSet : "+isTrainingSet);
-		//		// Create the instance
-		//		Instance iExample0 = new Instance(4);
-		//		iExample0.setValue((Attribute)fvWekaAttributes.elementAt(0), 1.0);
-		//		iExample0.setValue((Attribute)fvWekaAttributes.elementAt(1), 0.5);
-		//		iExample0.setValue((Attribute)fvWekaAttributes.elementAt(2), "black");
-		//		iExample0.setValue((Attribute)fvWekaAttributes.elementAt(3), "negative");
-		//		// add the instance
-		// 		isTrainingSet.add(iExample0);
-		// 		System.out.println("----------------------------------------------------------------------");
-		//		System.out.println("isTrainingSet : "+isTrainingSet);
-		//		int k = 50;
-		//		Instance[] instances = new Instance[k];
-		//		for(int i=0; i<k; i++)
-		//		{
-		//			Instance iExample1 = new Instance(4);
-		//			float randA1 = (float) (Math.random() * 20);
-		//			float randA2 = (float) (Math.random() * 20);
-		//			int randA3 = (int) (Math.random() * 3);
-		//			int randA4 = (int) (Math.random() * 2);
-		//			iExample1.setValue((Attribute)fvWekaAttributes.elementAt(0), randA1/20);
-		//			iExample1.setValue((Attribute)fvWekaAttributes.elementAt(1), randA2/20);
-		//			iExample1.setValue((Attribute)fvWekaAttributes.elementAt(2), (String) fvNominalVal.elementAt(randA3));
-		//			iExample1.setValue((Attribute)fvWekaAttributes.elementAt(3), (String) fvClassVal.elementAt(randA4));
-		//			instances[i]=iExample1;
-		//			isTrainingSet.add(instances[i]);
-		//			System.out.println("----------------------------------------------------------------------");
-		//			System.out.println("isTrainingSet : "+isTrainingSet);
-		//
-		//		}
-	}
-
-	/*
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	*/
 
 	final  Charset ENCODING = StandardCharsets.UTF_8;
 	void writeLargerTextFile(String aFileName, List<String> aLines) throws IOException
@@ -773,6 +690,180 @@ public class Corpus_Function
 			Thread.sleep(seconde*1000);                 //5000 milliseconds is five second.
 		} catch(InterruptedException ex) {
 			Thread.currentThread().interrupt();
+		}
+	}
+
+	public void termWeiting_Write_Arff(Map<String, Mot> words) {
+		System.out.println("termWeiting_Write_Arff() : start succeded");
+		String termWeiting_Arff = "";
+		List<String> lines_termWeiting_Arff = new ArrayList<String>();
+
+		String relation = "@relation";
+		String relationName = "documents";
+		String attribute = "@attribute";
+		String data = "@data";
+
+		termWeiting_Arff = termWeiting_Arff + relation +" "+ relationName;
+		lines_termWeiting_Arff.add(relation +" "+ relationName);
+
+		termWeiting_Arff = termWeiting_Arff + "\n";
+		int k=0;
+		for(Entry<String, Mot> entry_s_m : words.entrySet())
+		{
+			k++;
+			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
+			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
+			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+		}
+		termWeiting_Arff = termWeiting_Arff + "\n";
+		System.out.println(attribute + " \"polarite\" {-1,1}");
+		lines_termWeiting_Arff.add(attribute + " \"polarite\" {-1,1}");
+		lines_termWeiting_Arff.add(data);
+		int l;
+		for (l = 0; l < this.documents.length; l++)
+		{
+			int i=0;
+			String line="";
+			for(Entry<String, Mot> entry_s_m : words.entrySet())
+			{
+				if (entry_s_m.getValue().getTf_idf_Pos(l)>0)
+				{
+					System.out.println(entry_s_m.getValue().getValue()+"["+l+"] : tf_idf"+entry_s_m.getValue().getTf_idf_Pos(l));
+				}
+				//System.out.println("Mot["+i+"] : "+entry_s_m.getValue().getValue());
+				if (i==0)
+				{
+//					termWeiting_Arff = termWeiting_Arff +"\n"+"{";
+//					termWeiting_Arff = termWeiting_Arff + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
+					line = line +"\n"+"{";
+					line = line + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
+//					System.out.println(line);
+				}
+				if (i>0)
+				{
+//					termWeiting_Arff += "," + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
+					line += ","+ i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
+//					if (i%77 == 0)
+//					{
+//						System.out.println(line);
+//					}
+				}
+				if (i == words.size()-1)
+				{
+					//pause(2);
+					System.out.println("Coucou les amis");
+					//pause(2);
+//					termWeiting_Arff = termWeiting_Arff +"}";
+					line += ","+ (i+1) + " " + this.documents[l].getPolarite();
+					line = line +"}";
+//					System.out.println(line);
+				}
+				i++;
+			}
+			lines_termWeiting_Arff.add(line);
+			System.out.println(line);
+		}
+		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting", ".arff", output_path);
+
+		
+	}
+	
+	/*
+	* -------------------------------------------------------------------------------------------------------------------
+	* -------------------------------------------------------------------------------------------------------------------
+	* -------------------------------------------------------------------------------------------------------------------
+	* -------------------------------------------------------------------------------------------------------------------
+	*/
+	
+	public void our_file_writer(String data,String name,String extention,String path)
+	{
+		path = our_path_ctrl(path);
+		extention = our_extension_ctrl(extention);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+		Calendar cal = Calendar.getInstance();
+		System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(path+name+"_"+dateFormat.format(cal.getTime())+"."+extention, "UTF-8");
+			writer.println(data);
+			writer.close();
+			System.out.println(name+"_"+dateFormat.format(cal.getTime())+"."+extention+" writed in "+path);
+		}
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public String our_path_ctrl(String path)
+	{
+		if (path.charAt(path.length()-1) != '/')
+		{
+			System.out.println("Yaw yaw");
+			pause(5);
+			path =path+"/";
+		}
+		return path;
+	}
+	
+	public String our_extension_ctrl(String ext)
+	{
+		if (ext.charAt(0) != '.')
+		{
+			System.out.println("Yaw yaw");
+			pause(5);
+			ext ="."+ext;
+		}
+		return ext;
+	}
+	
+	public void our_file_writer(List<String> data, String name, String extention, String path) {
+		path = our_path_ctrl(path);
+		extention = our_extension_ctrl(extention);
+		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+		Calendar cal = Calendar.getInstance();
+		System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
+		try {
+			System.out.println(path + name+"_"+dateFormat.format(cal.getTime())+extention+"; Do");
+			System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
+			writeLargerTextFile(path + name+"_"+dateFormat.format(cal.getTime())+extention,data);
+			System.out.println(path + name+"_"+dateFormat.format(cal.getTime())+extention+"; Done");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	public  void mots_Write(Map<String, Mot> mots)
+	{
+		List<String> lines = new ArrayList<String>();
+		for(Entry<String, Mot> entry_s_m : mots.entrySet())
+		{
+			Mot mot = entry_s_m.getValue();
+			lines.add(mot.toString());
+			System.out.println(mot.toString());
+		}
+		our_file_writer(lines, "mot_infos", "txt", output_path);
+	}
+
+	public  void mots_Write_MYSQL(Map<String, Mot> mots)
+	{
+		JdbcCorpus objJdbcCorpus = new JdbcCorpus();
+		objJdbcCorpus.testDb();
+		
+		List<String> lines = new ArrayList<String>();
+		int resultInsert;
+		for(Entry<String, Mot> entry_s_m : mots.entrySet())
+		{
+			Mot mot = entry_s_m.getValue();
+			System.out.println(mot.insertSql());
+			lines.add(mot.insertSql());
+			resultInsert = objJdbcCorpus.executeUpdate(mot.insertSql());
+			System.out.println("resultInsert: " + resultInsert);	
 		}
 	}
 
