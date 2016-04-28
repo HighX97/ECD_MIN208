@@ -52,8 +52,8 @@ public class Corpus_Function
 	//Read input documents
 	public  void input(List<Our_path_model> path_model)
 	{
-		String csvFilePolarite = "/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/Projet/labels.csv";
-		String csvFileAvis = "/home/lowx/Documents/Professionnel/Etude/Master_AIGLE/M1/Extraction_Connaissances_Données/Projet/dataset.csv";
+		String csvFilePolarite = "ressources/labels.csv";
+		String csvFileAvis = "ressources/dataset.csv";
 		BufferedReader brPolarite = null;
 		BufferedReader brAvis = null;
 		String line = "";
