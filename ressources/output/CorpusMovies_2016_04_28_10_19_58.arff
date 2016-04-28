@@ -1,0 +1,4 @@
+@relation movies
+@attribute att_avis STRING
+@attribute att_thought {-1,1}
+@data
