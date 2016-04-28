@@ -74,19 +74,21 @@ $	currency symbol	$, £
  *
  */
 public class Lemmatisation {
-	
-	private String treetaggerHome = "treetagger";
+
+	private String treetaggerPath = "ressources/input/treetaggerLoic/";
+	private String treetaggerHome = treetaggerPath;
 	//private String treetaggerModel = "treetagger/english-par-linux-3.2-utf8.bin";//tt.setModel("/opt/treetagger/models/english.par:iso8859-1");
-	private String treetaggerModel = "treetagger/models/en.par";//tt.setModel("/opt/treetagger/models/english.par:iso8859-1");
-	
-	
+	private String treetaggermodelpath = treetaggerPath +"models/";
+	private String treetaggerModel = treetaggermodelpath+"en.par";//tt.setModel("/opt/treetagger/models/english.par:iso8859-1");
+
+
 	public Lemmatisation(){
-		
+
 	}
-	
+
 	public HashMap<String, String> obtenirListLemattise(List<String> listeMots) throws IOException, TreeTaggerException{
 		HashMap<String, String> resultatLemmatisation = new HashMap<String, String>();
-		
+
 		System.setProperty("treetagger.home", this.treetaggerHome);
 	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
 	    try {
@@ -108,8 +110,8 @@ public class Lemmatisation {
 	    }
 	    return resultatLemmatisation;
 	}
-	
-	
+
+
 	/**
 	 * @param listeMots
 	 * @param listeTreeTaggerTags
@@ -119,7 +121,7 @@ public class Lemmatisation {
 	 */
 	public HashMap<String, String> obtenirListLemattise(List<String> listeMots, final List<String> listeTreeTaggerTags) throws IOException, TreeTaggerException{
 		final HashMap<String, String> resultatLemmatisation = new HashMap<String, String>();
-		
+
 		System.setProperty("treetagger.home", this.treetaggerHome);
 	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
 	    try {
@@ -141,7 +143,7 @@ public class Lemmatisation {
 	    }
 	    return resultatLemmatisation;
 	}
-	
+
 	public void test() throws IOException, TreeTaggerException{
 		System.setProperty("treetagger.home", this.treetaggerHome);
 	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
