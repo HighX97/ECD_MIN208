@@ -50,7 +50,7 @@ public class Corpus_Function
 	*/
 
 	//Read input documents
-	public  void input(List<Our_path_model> path_model)
+	public  Opinion[] input(List<Our_path_model> path_model)
 	{
 		String csvFilePolarite = "ressources/labels.csv";
 		String csvFileAvis = "ressources/dataset.csv";
@@ -101,7 +101,6 @@ public class Corpus_Function
 				}
 			}
 		}
-
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORT DATA FROM LABEL.CSV~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 		//Ouverture d'un bloc try_catch
@@ -119,7 +118,6 @@ public class Corpus_Function
 				opinions[k].setPolarite(Integer.parseInt(polarite[0]));
 				//On incremente k pour la prochaine ligne
 				k++;
-
 			}
 		}
 		catch (FileNotFoundException e) 	//Document non trouvé : path incorrecte
@@ -141,15 +139,23 @@ public class Corpus_Function
 			}
 		}
 		System.out.println("Import suceeded");
+
+		return opinions;
+	}
+	/*
+	* -------------------------------------------------------------------------------------------------------------------
+	* -------------------------------------------------------------------------------------------------------------------
+	* -------------------------------------------------------------------------------------------------------------------
+	* -------------------------------------------------------------------------------------------------------------------
+	*/
+
+	public Map<String, Mot> find_words(Opinion[] opinions)
+	{
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IDENTIFICATION DES MOTS PRÉSENT DANS LES DOCUMENTS DU CORPUS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 		System.out.println("words.size() before : "+words.size());
-		this.pause(5);
+		this.pause(2);
 		//Pour chaque document du texte
-		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-		Calendar cal = Calendar.getInstance();
-		System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
-		PrintWriter writer;
 		String mots ="";
 
 		for (int l=0;l<2000;l++)
@@ -210,11 +216,27 @@ public class Corpus_Function
 				}
 			}
 		}
+		String output_path = "ressources/output/";
+		String file_name = "CorpusWord";
+		String extention = "txt";
+		our_file_writer(mots,file_name,extention,output_path);
+		System.out.println("words.size() after : "+words.size());
+		pause(5);
+		return words;
+	}
+
+	public void our_file_writer(String data,String name,String extention,String path)
+	{
+		//if (path.charAt(path.length -1).)
+		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+		Calendar cal = Calendar.getInstance();
+		System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
+		PrintWriter writer;
 		try {
-			writer = new PrintWriter("CorpsWord"+dateFormat.format(cal.getTime())+".txt", "UTF-8");
-			System.out.println(mots);
-			writer.println(mots);
+			writer = new PrintWriter(path+name+"_"+dateFormat.format(cal.getTime())+"."+extention, "UTF-8");
+			writer.println(data);
 			writer.close();
+			System.out.println(name+"_"+dateFormat.format(cal.getTime())+"."+extention+" writed in "+path);
 		}
 		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -223,15 +245,8 @@ public class Corpus_Function
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("words.size() after : "+words.size());
-		pause(5);
 	}
-	/*
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	*/
+
 
 	public  void boolean_model_Write_Arff()
 	{
