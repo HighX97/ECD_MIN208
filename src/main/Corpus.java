@@ -105,12 +105,12 @@ public class Corpus
 		documents = crp_fnc.input(p);
 		System.out.println("input() : succeeded\n");
 		
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_ARFF DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		System.out.println("documentw_Write_Arff() : start\n");
-
-		crp_fnc.pause(5);
-		crp_fnc.document_Write_Arff();
-		System.out.println("documentw_Write_Arff() : succeeded\n");
+//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_ARFF DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//		System.out.println("documentw_Write_Arff() : start\n");
+//
+//		crp_fnc.pause(5);
+//		crp_fnc.document_Write_Arff();
+//		System.out.println("documentw_Write_Arff() : succeeded\n");
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LOAD AND STORE MOTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_LOAD AND STORE MOTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -119,6 +119,8 @@ public class Corpus
 		crp_fnc.pause(5);
 		words = crp_fnc.find_words(documents);
 		System.out.println("find_words() : succeeded\n");
+		
+		crp_fnc.mots_Write(crp_fnc.words);
 
 
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,9 +128,9 @@ public class Corpus
 //		crp_fnc.pause(5);
 //		crp_fnc.boolean_model_Write_Arff();
 //		System.out.println("boolean_model_Write_Arff() : succeeded\n");
-
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//
+//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~REMOVE STOP WORD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~00_02_REMOVE STOP WORD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -458,30 +460,30 @@ public class Corpus
 //		crp_fnc.remove_stop_words(stopwords);
 //		System.out.println("remove_stop_words(stopwords) : succeeded\n");
 
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TERME FREQUENCY~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		System.out.println("termWeiting_TF() : start\n");
-		crp_fnc.pause(5);
-		crp_fnc.termWeiting_TF();
-		System.out.println("termWeiting_TF() : succeeded\n");
-
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CALCULE IDF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_02_CALCULE INVERSE DOCUMENT FREQUENCY~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-		System.out.println("termWeiting_IDF() : start\n");
-		crp_fnc.pause(5);
-		crp_fnc.termWeiting_IDF();
-		System.out.println("termWeiting_IDF() : succeeded\n");
-
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CALCULE TDF_IDF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_03_TF-IDF WEIGHTING~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		System.out.println("termWeiting_TF_IDF() : start\n");
-		crp_fnc.pause(5);
-		crp_fnc.termWeiting_TF_IDF();
-		System.out.println("termWeiting_TF_IDF() : succeeded\n");
-		
-		crp_fnc.mots_Write(crp_fnc.words);
-		//crp_fnc.mots_Write_MYSQL(crp_fnc.words);
+//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TERME FREQUENCY~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//		System.out.println("termWeiting_TF() : start\n");
+//		crp_fnc.pause(5);
+//		crp_fnc.termWeiting_TF();
+//		System.out.println("termWeiting_TF() : succeeded\n");
+//
+//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CALCULE IDF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_02_CALCULE INVERSE DOCUMENT FREQUENCY~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//
+//		System.out.println("termWeiting_IDF() : start\n");
+//		crp_fnc.pause(5);
+//		crp_fnc.termWeiting_IDF();
+//		System.out.println("termWeiting_IDF() : succeeded\n");
+//
+//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CALCULE TDF_IDF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_03_TF-IDF WEIGHTING~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//		System.out.println("termWeiting_TF_IDF() : start\n");
+//		crp_fnc.pause(5);
+//		crp_fnc.termWeiting_TF_IDF();
+//		System.out.println("termWeiting_TF_IDF() : succeeded\n");
+//		
+//		crp_fnc.mots_Write(crp_fnc.words);
+//		//crp_fnc.mots_Write_MYSQL(crp_fnc.words);
 
 
 //		//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DOCUMENT LENGTH NORMALIZATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -489,7 +491,7 @@ public class Corpus
 //		crp_fnc.termWeiting_Doc_Length_Norlamisation();
 //		crp_fnc.pause(5);
 
-//				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_05_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 //		System.out.println("termWeiting_Write_Arff() : start\n");
 //		crp_fnc.pause(5);

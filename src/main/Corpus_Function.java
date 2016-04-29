@@ -161,7 +161,6 @@ public class Corpus_Function
 		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 		Calendar cal = Calendar.getInstance();
 		System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
-		PrintWriter writer;
 		String mots ="";
 
 		for (int l=0;l<this.documents.length;l++)
@@ -193,6 +192,7 @@ public class Corpus_Function
 						m.getPolarite()[l]=this.documents[l].getPolarite();
 						m.incDf();
 						m.incTf_pos(l);
+						m.updTf_Idf(l);
 						if (this.documents[l].getPolarite()==1)
 						{
 							m.addpolarite_positive(this.documents[l].getPolarite());
@@ -225,6 +225,7 @@ public class Corpus_Function
 						m.getPolarite()[l]=this.documents[l].getPolarite();
 						m.incDf();
 						m.incTf_pos(l);
+						m.updTf_Idf(l);
 						//Si l'occurence du mot pour la ligne courante est null
 						if(m.getOccurrencePos(l) ==null)
 						{
@@ -247,7 +248,7 @@ public class Corpus_Function
 								System.out.println("========================================================");
 								m.addpolarite_positive(this.documents[l].getPolarite());
 							}
-							System.out.println(m.getValue()+"("+m.getTf_Pos(l)+","+m.getDf()+","+m.getpolarite_positive()+","+m.getpolarite_negative()+") : Document positif");
+							System.out.println(m.getValue()+"["+l+"](tf:"+m.getTf_Pos(l)+",df:"+m.getDf()+",idf:"+m.getIdf()+",tf-idf:"+m.getTf_idf_Pos(l)+",pol+:+"+m.getpolarite_positive()+",pol-:"+m.getpolarite_negative()+") : Document positif");
 						}
 						else
 						{
@@ -256,7 +257,7 @@ public class Corpus_Function
 								System.out.println("========================================================");
 								m.addpolarite_negative(this.documents[l].getPolarite());
 							}
-							System.out.println(m.getValue()+"("+m.getTf_Pos(l)+","+m.getDf()+","+m.getpolarite_positive()+","+m.getpolarite_negative()+") : Document negatif");
+							System.out.println(m.getValue()+"["+l+"](tf:"+m.getTf_Pos(l)+",df:"+m.getDf()+",idf:"+m.getIdf()+",tf-idf:"+m.getTf_idf_Pos(l)+",pol+:+"+m.getpolarite_positive()+",pol-:"+m.getpolarite_negative()+") : Document negatif");
 						}
 						if(l%500 == 0)
 						{
@@ -474,77 +475,77 @@ public class Corpus_Function
 	}
 
 
-	public  void termWeiting_Write_Arff()
-	{
-		System.out.println("termWeiting_Write_Arff() : start succeded");
-		String termWeiting_Arff = "";
-		List<String> lines_termWeiting_Arff = new ArrayList<String>();
-
-		String relation = "@relation";
-		String relationName = "documents";
-		String attribute = "@attribute";
-		String data = "@data";
-
-		termWeiting_Arff = termWeiting_Arff + relation +" "+ relationName;
-		lines_termWeiting_Arff.add(relation +" "+ relationName);
-
-		termWeiting_Arff = termWeiting_Arff + "\n";
-		int k=0;
-		for(Entry<String, Mot> entry_s_m : words.entrySet())
-		{
-			k++;
-			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
-			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
-			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
-		}
-		termWeiting_Arff = termWeiting_Arff + "\n";
-		lines_termWeiting_Arff.add(data);
-		int l;
-		for (l=0;l<10;l++)
-		{
-			int i=0;
-			String line="";
-			for(Entry<String, Mot> entry_s_m : words.entrySet())
-			{
-				if (entry_s_m.getValue().getTf_idf_Pos(l)>0)
-				{
-					System.out.println(entry_s_m.getValue().getValue()+"["+l+"] : tf_idf"+entry_s_m.getValue().getTf_idf_Pos(l));
-				}
-				//System.out.println("Mot["+i+"] : "+entry_s_m.getValue().getValue());
-				if (i==0)
-				{
-//					termWeiting_Arff = termWeiting_Arff +"\n"+"{";
-//					termWeiting_Arff = termWeiting_Arff + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
-					line = line +"\n"+"{";
-					line = line + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
-//					System.out.println(line);
-				}
-				if (i>0)
-				{
-//					termWeiting_Arff += "," + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
-					line += ","+ i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
-//					if (i%77 == 0)
-//					{
-//						System.out.println(line);
-//					}
-				}
-				if (i == words.size()-1)
-				{
-					pause(2);
-					System.out.println("Coucou les amis");
-					pause(2);
-//					termWeiting_Arff = termWeiting_Arff +"}";
-					line = line +"}";
-//					System.out.println(line);
-				}
-				i++;
-			}
-			lines_termWeiting_Arff.add(line);
-			System.out.println(line);
-		}
-		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting", ".arff", output_path);
-
-	}
+//	public  void termWeiting_Write_Arff()
+//	{
+//		System.out.println("termWeiting_Write_Arff() : start succeded");
+//		String termWeiting_Arff = "";
+//		List<String> lines_termWeiting_Arff = new ArrayList<String>();
+//
+//		String relation = "@relation";
+//		String relationName = "documents";
+//		String attribute = "@attribute";
+//		String data = "@data";
+//
+//		termWeiting_Arff = termWeiting_Arff + relation +" "+ relationName;
+//		lines_termWeiting_Arff.add(relation +" "+ relationName);
+//
+//		termWeiting_Arff = termWeiting_Arff + "\n";
+//		int k=0;
+//		for(Entry<String, Mot> entry_s_m : words.entrySet())
+//		{
+//			k++;
+//			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
+//			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
+//			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+//		}
+//		termWeiting_Arff = termWeiting_Arff + "\n";
+//		lines_termWeiting_Arff.add(data);
+//		int l;
+//		for (l=0;l<10;l++)
+//		{
+//			int i=0;
+//			String line="";
+//			for(Entry<String, Mot> entry_s_m : words.entrySet())
+//			{
+//				if (entry_s_m.getValue().getTf_idf_Pos(l)>0)
+//				{
+//					System.out.println(entry_s_m.getValue().getValue()+"["+l+"] : tf_idf"+entry_s_m.getValue().getTf_idf_Pos(l));
+//				}
+//				//System.out.println("Mot["+i+"] : "+entry_s_m.getValue().getValue());
+//				if (i==0)
+//				{
+////					termWeiting_Arff = termWeiting_Arff +"\n"+"{";
+////					termWeiting_Arff = termWeiting_Arff + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
+//					line = line +"\n"+"{";
+//					line = line + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
+////					System.out.println(line);
+//				}
+//				if (i>0)
+//				{
+////					termWeiting_Arff += "," + i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
+//					line += ","+ i + " " + entry_s_m.getValue().getTf_idf_Pos(l);
+////					if (i%77 == 0)
+////					{
+////						System.out.println(line);
+////					}
+//				}
+//				if (i == words.size()-1)
+//				{
+//					pause(2);
+//					System.out.println("Coucou les amis");
+//					pause(2);
+////					termWeiting_Arff = termWeiting_Arff +"}";
+//					line = line +"}";
+////					System.out.println(line);
+//				}
+//				i++;
+//			}
+//			lines_termWeiting_Arff.add(line);
+//			System.out.println(line);
+//		}
+//		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting", ".arff", output_path);
+//
+//	}
 
 
 	public  void boolean_model_Write_Arff()
@@ -633,7 +634,7 @@ public class Corpus_Function
 	public String remove_stop_caractere(String p_crct)
 	{
 		System.out.println("mot :"+p_crct);
-		String rslt = p_crct.replaceAll("[^a-zA-Z]", " ").toLowerCase().trim();
+		String rslt = p_crct.replaceAll("[^a-zA-Z]", "").toLowerCase().trim();
 		System.out.println("Remove_stop_caractere mot :"+rslt);
 		return rslt;
 		//		Pattern p = Pattern.compile("[^a-zA-Z]");
@@ -713,7 +714,7 @@ public class Corpus_Function
 		}
 	}
 
-	public void termWeiting_Write_Arff(Map<String, Mot> words) {
+	public void termWeiting_tf_idf_Write_Arff(Map<String, Mot> words) {
 		System.out.println("termWeiting_Write_Arff() : start succeded");
 		String termWeiting_Arff = "";
 		List<String> lines_termWeiting_Arff = new ArrayList<String>();
@@ -783,9 +784,80 @@ public class Corpus_Function
 			lines_termWeiting_Arff.add(line);
 			System.out.println(line);
 		}
-		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting", ".arff", output_path);
+		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting_tf_idf", ".arff", output_path);
+	}
 
+	public void termWeiting_tf_Write_Arff(Map<String, Mot> words) {
+		System.out.println("termWeiting_Write_Arff() : start succeded");
+		String termWeiting_Arff = "";
+		List<String> lines_termWeiting_Arff = new ArrayList<String>();
 
+		String relation = "@relation";
+		String relationName = "documents";
+		String attribute = "@attribute";
+		String data = "@data";
+
+		termWeiting_Arff = termWeiting_Arff + relation +" "+ relationName;
+		lines_termWeiting_Arff.add(relation +" "+ relationName);
+
+		termWeiting_Arff = termWeiting_Arff + "\n";
+		int k=0;
+		for(Entry<String, Mot> entry_s_m : words.entrySet())
+		{
+			k++;
+			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
+			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
+			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+		}
+		termWeiting_Arff = termWeiting_Arff + "\n";
+		System.out.println(attribute + " \"polarite\" {-1,1}");
+		lines_termWeiting_Arff.add(attribute + " \"polarite\" {-1,1}");
+		lines_termWeiting_Arff.add(data);
+		int l;
+		for (l = 0; l < this.documents.length; l++)
+		{
+			int i=0;
+			String line="";
+			for(Entry<String, Mot> entry_s_m : words.entrySet())
+			{
+				if (entry_s_m.getValue().getTf_Pos(l)>0)
+				{
+					System.out.println(entry_s_m.getValue().getValue()+"["+l+"] : tf_idf"+entry_s_m.getValue().getTf_Pos(l));
+				}
+				//System.out.println("Mot["+i+"] : "+entry_s_m.getValue().getValue());
+				if (i==0)
+				{
+//					termWeiting_Arff = termWeiting_Arff +"\n"+"{";
+//					termWeiting_Arff = termWeiting_Arff + i + " " + entry_s_m.getValue().getTf_Pos(l);
+					line = line +"\n"+"{";
+					line = line + i + " " + entry_s_m.getValue().getTf_Pos(l);
+//					System.out.println(line);
+				}
+				if (i>0)
+				{
+//					termWeiting_Arff += "," + i + " " + entry_s_m.getValue().getTf_Pos(l);
+					line += ","+ i + " " + entry_s_m.getValue().getTf_Pos(l);
+//					if (i%77 == 0)
+//					{
+//						System.out.println(line);
+//					}
+				}
+				if (i == words.size()-1)
+				{
+					//pause(2);
+					System.out.println("Coucou les amis");
+					//pause(2);
+//					termWeiting_Arff = termWeiting_Arff +"}";
+					line += ","+ (i+1) + " " + this.documents[l].getPolarite();
+					line = line +"}";
+//					System.out.println(line);
+				}
+				i++;
+			}
+			lines_termWeiting_Arff.add(line);
+			System.out.println(line);
+		}
+		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting_tf", ".arff", output_path);
 	}
 
 	/*
@@ -810,10 +882,8 @@ public class Corpus_Function
 			System.out.println(name+"_"+dateFormat.format(cal.getTime())+"."+extention+" writed in "+path);
 		}
 		catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -894,7 +964,6 @@ public class Corpus_Function
 		for(Entry<String, Mot> entry_s_m : mots.entrySet())
 		{
 			Mot mot = entry_s_m.getValue();
-			System.out.println(mot.insertSql());
 			lines.add(mot.insertSql());
 			resultInsert = objJdbcCorpus.executeUpdate(mot.insertSql());
 			System.out.println("resultInsert: " + resultInsert);

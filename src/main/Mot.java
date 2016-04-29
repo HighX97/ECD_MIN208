@@ -18,6 +18,7 @@ public class Mot
 	private double idf;
 	private double tf_idfmax;
 	private double tf_idfmin;
+	private double tf_idfcumule;
 	private int polarite_negative;
 	private int polarite_positive;
 
@@ -50,6 +51,7 @@ public class Mot
 		idf=0.0;
 		tf_idfmax=0.0;
 		tf_idfmin=(double) Integer.MAX_VALUE;
+		tf_idfcumule =0.0;
 		polarite_negative=0;
 		polarite_positive=0;
 		polarite = new int[2000];
@@ -342,14 +344,49 @@ public class Mot
 	static int dfCount =0;
 	public int incDf()
 	{
-		System.out.println("incDF"+(++dfCount));
-		return ++df;
+		System.out.println("\t\t\t\t\tincDF : "+(++dfCount));
+		++df;
+		updIDF();
+		return df;
+	}
+	
+	public double updIDF()
+	{
+		idf = Math.log(2000/df);
+		return idf;
 	}
 
 	//Methode
 
 	public String toString()
 	{
+		for (int i=0;i<2000;i++)
+		{
+			if(tf[i]>tf_max)
+			{
+				tf_max =tf[i];
+			}
+			if(tf[i]>0)
+			{
+				if(tf_min > tf[i])
+				{
+					tf_min =tf[i];
+				}
+			}
+			if(tf_idf[i]>tf_idfmax)
+			{
+				tf_idfmax =tf_idf[i];
+			}
+			if(tf[i]>0)
+			{
+				if(tf_idfmin > tf_idf[i])
+				{
+					tf_idfmin =tf_idf[i];
+				}
+			}
+		tf_cumule+=tf[i];
+		tf_idfcumule+=tf_idf[i];
+		}
 		String mot_to_string="(";
 		//mot_to_string+=id +" , ";
 		mot_to_string+="\""+value+"\" , ";
@@ -360,6 +397,7 @@ public class Mot
 		mot_to_string+=idf+" , ";
 		mot_to_string+=tf_idfmax+" , ";
 		mot_to_string+=tf_idfmin+" , ";
+		mot_to_string+=tf_idfcumule+" , ";
 		mot_to_string+=polarite_negative+" , ";
 		mot_to_string+=polarite_positive+")";
 		return mot_to_string;
@@ -383,6 +421,12 @@ public class Mot
 	{
 		System.out.println("\t\tINCTF ( "+tf[l]+","+l+")");
 		setTf_Pos(tf[l]+1, l);
+	}
+
+	public double updTf_Idf(int pos) 
+	{
+		tf_idf[pos] = tf[pos]*idf;
+		return tf_idf[pos];
 	}
 
 
