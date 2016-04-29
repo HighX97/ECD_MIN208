@@ -13,6 +13,7 @@ public class Document
 	private String avis;
 //	private Map<String,Mot> avis_mots;
 	private int polarite;
+	private int nombre_mots;
 	
 	//Class
 	private int count=0;
@@ -38,6 +39,13 @@ public class Document
 	{
 		this(avis);
 		this.setPolarite(polarite);
+	}
+	public Document(int id, String avis, int polarite, int nombre_mots)
+	{
+		this(avis);
+		this.id = id;
+		this.setPolarite(polarite);
+		this.nombre_mots = nombre_mots;
 	}
 	
 	//Get & Set

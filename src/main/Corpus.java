@@ -28,6 +28,7 @@ import java.util.concurrent.Callable;
 import org.annolab.tt4j.TreeTaggerException;
 
 import db_JDBC.MotModel;
+import db_JDBC.DocumentModel;
 
 //import weka.classifiers.Classifier;
 //import weka.classifiers.Evaluation;
@@ -54,42 +55,102 @@ public class Corpus
 	//		corpus.
 	//	}
 
-	public static void main(String [] args) throws IOException, TreeTaggerException
+	public static void main(String [] args) throws Exception
 	{
-//		Lemmatisation objLemmatisation = new Lemmatisation();
-//		List<String> listeMotsTmp = Arrays.asList(new String[] { "sjahsjhk", "is", "has", "a" });
-//		HashMap<String, String> resultatLemmatisation1 = objLemmatisation.obtenirListLemattise(listeMotsTmp);
-//		if ( true ) {
-//			System.out.println("Après lematisation:" + resultatLemmatisation1.size());
-//	        return;
-//	    }
-//		
-//		MotModel objMotmodel = new MotModel();
-//		String option = "";
-//		
-//		switch(option){
-//			case "getListMotsFromDb":
-//				List<String> listWords = objMotmodel.getListMotsFromDb();
-//				for(String word : listWords ){
-//					System.out.println(word);
-//				}
-//				return;
-//				//break;
-//			case "CreateWordInsertions":
-//				crp_fnc = new Corpus_Function();
-//				List<Our_path_model> p = new ArrayList<Our_path_model>();
-//				
-//				crp_fnc.words = objMotmodel.getCollectionsMotsFromDb();
-//				crp_fnc.input(p);
-//				crp_fnc.termWeiting_TF();
-//				crp_fnc.termWeiting_IDF();
-//				crp_fnc.termWeiting_TF_IDF();
-//				crp_fnc.termWeiting_Write_Arff(crp_fnc.words);
-//				return;
-//			default:
-//				
-//				break;
-//		}
+		
+		crp_fnc = new Corpus_Function();
+		Lemmatisation LemmatisationObj = new Lemmatisation();
+		MotModel objMotmodel = new MotModel();
+		HashMap<String, String> resultatLemmatisation;
+		List<String> listWords2 = new ArrayList<String>();
+		
+		String option = "";
+		
+		switch(option){
+			case "getListMotsFromDb":
+				
+				List<String> listWords = objMotmodel.getListMotsFromDb();
+				for(String word : listWords ){
+					System.out.println(word);
+				}
+				return;
+				//break;
+			case "testCreateDocument":
+				DocumentModel objDocmodel = new DocumentModel();
+				int resultInsertDocument = objDocmodel.createDocument("mon avis", 1, 2 );
+				return;
+				//break;
+			case "CreateWordInsertions":
+				MotModel objMotmodel2 = new MotModel();
+				List<Our_path_model> p = new ArrayList<Our_path_model>();
+				
+				crp_fnc.words = objMotmodel2.getCollectionsMotsFromDb();
+				crp_fnc.input(p);
+				crp_fnc.termWeiting_TF();
+				crp_fnc.termWeiting_IDF();
+				crp_fnc.termWeiting_TF_IDF();
+				//crp_fnc.termWeiting_Write_Arff(crp_fnc.words);
+				return;
+			case "lematisationFromDb":
+				//List<String> listWords2 = objMotmodel.getListMotsFromDb();
+				listWords2 = new ArrayList<String>();
+				listWords2.add("this");
+				listWords2.add("is");
+				listWords2.add("have");
+				listWords2.add("ashask");
+				listWords2.add("Jimmy");
+				listWords2.add("books");
+				for(String word : listWords2 ){
+					//System.out.println(word);
+				}
+				resultatLemmatisation = LemmatisationObj.obtenirListLemattise(listWords2);
+				return;
+			case "lematisationMorphoSyntanxiqueFromDb":
+				listWords2 = objMotmodel.getListMotsFromDb();
+				System.out.println("Total mots :" + listWords2.size());
+				crp_fnc.pause(2);
+				/*
+				listWords2 = new ArrayList<String>();
+				listWords2.add("this");
+				listWords2.add("is");
+				listWords2.add("have");
+				listWords2.add("sadhasdhkjh");
+				listWords2.add("Jimmy");
+				listWords2.add("books");
+				*/
+				for(String word : listWords2 ){
+					//System.out.println(word);
+				}
+				if(false){
+					resultatLemmatisation = LemmatisationObj.obtenirListLemattise(listWords2);
+					return;
+				}
+				//Seulement les Adjeftifs
+				if(false){ //Filter By tags
+					List<String> allowTreeTaggerTagsList = new ArrayList<String>();
+					allowTreeTaggerTagsList.add("VH");
+					resultatLemmatisation = LemmatisationObj.obtenirListLemattiseInTagList(listWords2, allowTreeTaggerTagsList);
+				}
+				else{ //Exclude tags
+					List<String> excludeTreeTaggerTagsList = new ArrayList<String>();
+					excludeTreeTaggerTagsList.add("NP");
+					excludeTreeTaggerTagsList.add("NN");
+					excludeTreeTaggerTagsList.add("NNS");
+					excludeTreeTaggerTagsList.add("NPS");
+					resultatLemmatisation = LemmatisationObj.obtenirListLemattiseNotInTagList(listWords2, excludeTreeTaggerTagsList);
+				}
+				System.out.println("Total mots :" + resultatLemmatisation.size());
+				return;
+			/*
+			case "":
+				//TreeTagger.testTritaggerMashad();
+				return;
+			*/
+				//break;
+			default:
+				
+				break;
+		}
 		
 		
 		documents = new Document[2000];
@@ -122,6 +183,7 @@ public class Corpus
 		
 		crp_fnc.mots_Write(crp_fnc.words);
 		//crp_fnc.mots_Write_MYSQL(crp_fnc.words);
+
 
 
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
