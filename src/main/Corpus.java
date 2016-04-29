@@ -121,6 +121,7 @@ public class Corpus
 		System.out.println("find_words() : succeeded\n");
 		
 		crp_fnc.mots_Write(crp_fnc.words);
+		//crp_fnc.mots_Write_MYSQL(crp_fnc.words);
 
 
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

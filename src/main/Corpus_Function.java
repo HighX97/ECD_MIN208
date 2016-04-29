@@ -190,7 +190,8 @@ public class Corpus_Function
 						Mot m = words.get(s_remove_stop_caractere);
 						m.setPolarite(new int[2000]);
 						m.getPolarite()[l]=this.documents[l].getPolarite();
-						m.incDf();
+//						m.incDf();
+						m.updtDf();
 						m.incTf_pos(l);
 						m.updTf_Idf(l);
 						if (this.documents[l].getPolarite()==1)
@@ -223,7 +224,8 @@ public class Corpus_Function
 						//Récupération de l'objet mot
 						Mot m = words.get(s_remove_stop_caractere);
 						m.getPolarite()[l]=this.documents[l].getPolarite();
-						m.incDf();
+//						m.incDf();
+						m.updtDf();
 						m.incTf_pos(l);
 						m.updTf_Idf(l);
 						//Si l'occurence du mot pour la ligne courante est null
@@ -948,6 +950,7 @@ public class Corpus_Function
 		for(Entry<String, Mot> entry_s_m : mots.entrySet())
 		{
 			Mot mot = entry_s_m.getValue();
+			mot.updtDf();
 			lines.add(mot.toString());
 			System.out.println(mot.toString());
 		}

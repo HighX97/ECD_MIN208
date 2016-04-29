@@ -346,20 +346,29 @@ public class Mot
 	{
 		System.out.println("\t\t\t\t\tincDF : "+(++dfCount));
 		++df;
-		updIDF();
 		return df;
 	}
 	
 	public double updIDF()
 	{
 		idf = Math.log(2000/df);
+		updTf_Idf();
 		return idf;
+	}
+
+	private void updTf_Idf() 
+	{
+		for (int i=0;i<tf_idf.length;i++)
+		{
+			tf_idf[i] = tf[i]*idf;
+		}
+		
 	}
 
 	//Methode
 	public void updtMaxMinCumule()
 	{
-		for (int i=0;i<2000;i++)
+		for (int i=0;i<tf.length;i++)
 		{
 			if(tf[i]>tf_max)
 			{
@@ -430,6 +439,24 @@ public class Mot
 	{
 		tf_idf[pos] = tf[pos]*idf;
 		return tf_idf[pos];
+	}
+
+	public void updtDf() 
+	{
+		int loc_df=0;
+		for (int i=0;i<tf.length;i++)
+		{
+			if (tf[i]>0)
+			{
+				loc_df++;
+			}
+		}
+		System.out.println("\t\t\t\t\t\t\t\t updtDf : "+loc_df);
+		df=loc_df;	
+		if(df>0)
+		{
+			updIDF();
+		}
 	}
 
 

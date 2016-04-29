@@ -37,6 +37,7 @@ public class MotModel extends JdbcCorpus{
 				double idf = rs.getDouble("idf");
 				double tf_idfmax = rs.getDouble("tf_idfmax");
 				double tf_idfmin = rs.getDouble("tf_idfmin");
+				double tf_idfcumule = rs.getDouble("tf_idfcumule");
 				int polarite_negative = rs.getInt("polarite_negative");
 				int polarite_positive = rs.getInt("polarite_positive");
 		         
@@ -50,6 +51,7 @@ public class MotModel extends JdbcCorpus{
 		   			idf,
 		   			tf_idfmax,
 		   			tf_idfmin,
+		   			tf_idfcumule,
 		   			polarite_negative,
 		   			polarite_positive
 		        );
