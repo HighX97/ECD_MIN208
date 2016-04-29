@@ -11,7 +11,7 @@ public class JdbcCorpus
 	   private final String DB_URL = "jdbc:mysql://localhost:3306/"+DB_Name;
 
 	   //  Database credentials
-	   private final String USER = "user_extraction";
+	   private final String USER = "root";
 	   private final String PASS = "password";
 	   
 	   protected Connection getMysqlConnection()

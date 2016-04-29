@@ -28,7 +28,7 @@ public class MotModel extends JdbcCorpus{
 		   stmt = conn.createStatement();
 		   rs = stmt.executeQuery(sql);
 		   while(rs.next()){
-				int id = rs.getInt("id");
+				//int id = rs.getInt("id");
 				String value = rs.getString("value");
 				int tf_max = rs.getInt("tf_max");
 				int tf_min = rs.getInt("tf_min");
@@ -42,7 +42,7 @@ public class MotModel extends JdbcCorpus{
 				int polarite_positive = rs.getInt("polarite_positive");
 		         
 		        Mot motObj = new Mot(
-	        		id,
+	        		//id,
 		   			value,
 		   			tf_max,
 		   			tf_min,
@@ -90,7 +90,7 @@ public class MotModel extends JdbcCorpus{
 	public List<String> getListMotsFromDb() 
 	{
 		ArrayList<String> words = new ArrayList<String>();
-		String sql = "SELECT * FROM db_CorpusECD.Mots ORDER BY tf_cumule DESC LIMIT 2000;";
+		String sql = "select * From Mots order by tf_cumule desc limit 500,500;";
 		ResultSet rs = null;
 	    Connection conn = this.getMysqlConnection();
 	    Statement stmt = null;
@@ -98,7 +98,7 @@ public class MotModel extends JdbcCorpus{
 		   stmt = conn.createStatement();
 		   rs = stmt.executeQuery(sql);
 		   while(rs.next()){
-				int id = rs.getInt("id");
+//				int id = rs.getInt("id");
 				String value = rs.getString("value");
 				words.add(value);
 		     }

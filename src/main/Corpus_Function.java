@@ -550,7 +550,7 @@ public class Corpus_Function
 //	}
 
 
-	public  void boolean_model_Write_Arff()
+	public  void boolean_model_Write_Arff(List<String> mots)
 	{
 		String booleanModel_Arff = "";
 		List<String> lines_booleanModel_Arff = new ArrayList<String>();
@@ -566,9 +566,13 @@ public class Corpus_Function
 		booleanModel_Arff = booleanModel_Arff + "\n";
 		for(Entry<String, Mot> entry_s_m : words.entrySet())
 		{
+			String mot = entry_s_m.getKey();
+			if(mots.contains(mot))
+					{
 			System.out.println("Mot : "+entry_s_m.getValue().getValue()+" STRING");
 			booleanModel_Arff = booleanModel_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
 			lines_booleanModel_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+					}
 		}
 		//				System.out.println(booleanModel_Arff);
 		lines_booleanModel_Arff.add(data);
@@ -592,14 +596,28 @@ public class Corpus_Function
 					booleanModel_Arff = booleanModel_Arff +"\n"+"{";
 					booleanModel_Arff = booleanModel_Arff + i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
 					line += "\n"+"{";
-					line += i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
+					if(entry_s_m.getValue().getTf_Pos(l)==0)
+					{
+						line += i + " 0";
+					}
+					else
+					{
+						line += i + " 1";
+					}
 					//						System.out.println(line);
 					//						pause(5);
 				}
 				if (i>0)
 				{
 					booleanModel_Arff += "," + i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
-					line += ","+ i + " " + entry_s_m.getValue().getBoolMod_Pos_Int(l);
+					if(entry_s_m.getValue().getTf_Pos(l)==0)
+					{
+						line +=","+ i + " 0";
+					}
+					else
+					{
+						line +=","+ i + " 1";
+					}
 					if (i%77 == 0)
 					{
 						//							System.out.println(line);
@@ -716,7 +734,7 @@ public class Corpus_Function
 		}
 	}
 
-	public void termWeiting_tf_idf_Write_Arff(Map<String, Mot> words) {
+	public void termWeiting_tf_idf_Write_Arff(List<String> mots) {
 		System.out.println("termWeiting_Write_Arff() : start succeded");
 		String termWeiting_Arff = "";
 		List<String> lines_termWeiting_Arff = new ArrayList<String>();
@@ -733,10 +751,14 @@ public class Corpus_Function
 		int k=0;
 		for(Entry<String, Mot> entry_s_m : words.entrySet())
 		{
-			k++;
-			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
-			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
-			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+			String mot = entry_s_m.getKey();
+			if(mots.contains(mot))
+					{
+				k++;
+				System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
+				termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
+				lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+					}
 		}
 		termWeiting_Arff = termWeiting_Arff + "\n";
 		System.out.println(attribute + " \"polarite\" {-1,1}");
@@ -789,7 +811,7 @@ public class Corpus_Function
 		our_file_writer(lines_termWeiting_Arff, "Document_terme_weiting_tf_idf", ".arff", output_path);
 	}
 
-	public void termWeiting_tf_Write_Arff(Map<String, Mot> words) {
+	public void termWeiting_tf_Write_Arff(List<String> mots) {
 		System.out.println("termWeiting_Write_Arff() : start succeded");
 		String termWeiting_Arff = "";
 		List<String> lines_termWeiting_Arff = new ArrayList<String>();
@@ -807,9 +829,13 @@ public class Corpus_Function
 		for(Entry<String, Mot> entry_s_m : words.entrySet())
 		{
 			k++;
+			String mot = entry_s_m.getKey();
+			if(mots.contains(mot))
+					{
 			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
 			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
 			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+					}
 		}
 		termWeiting_Arff = termWeiting_Arff + "\n";
 		System.out.println(attribute + " \"polarite\" {-1,1}");
@@ -962,12 +988,10 @@ public class Corpus_Function
 		JdbcCorpus objJdbcCorpus = new JdbcCorpus();
 		objJdbcCorpus.testDb();
 
-		List<String> lines = new ArrayList<String>();
 		int resultInsert;
 		for(Entry<String, Mot> entry_s_m : mots.entrySet())
 		{
 			Mot mot = entry_s_m.getValue();
-			lines.add(mot.insertSql());
 			resultInsert = objJdbcCorpus.executeUpdate(mot.insertSql());
 			System.out.println("resultInsert: " + resultInsert);
 		}

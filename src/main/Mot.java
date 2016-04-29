@@ -83,6 +83,20 @@ public class Mot
 		this.polarite_negative = polarite_negative;
 		this.polarite_positive = polarite_positive;
 	}
+	public Mot(String value, int tf_max, int tf_min, int tf_cumule, int df, double idf, double tf_idfmax,double tf_idfcumule, double tf_idfmin, int polarite_negative, int polarite_positive){
+		this();
+		this.value = value;
+		this.tf_max = tf_max;
+		this.tf_min = tf_min;
+		this.tf_cumule = tf_cumule;
+		this.df = df;
+		this.idf = idf;
+		this.tf_idfmax = tf_idfmax;
+		this.tf_idfmin = tf_idfmin;
+		this.tf_idfcumule = tf_idfcumule;
+		this.polarite_negative = polarite_negative;
+		this.polarite_positive = polarite_positive;
+	}
 
 	public int getId() {
 		return id;
@@ -419,7 +433,7 @@ public class Mot
 		String nameTable="Mots";
 		String sql_insert = "INSERT INTO "+nameTable;
 		sql_insert +="\n";
-		sql_insert +="(value,tf_max,tf_min,tf_cumule,df,idf,tf_idfmax,tf_idfmin,polarite_negative,polarite_positive)";
+		sql_insert +="(value,tf_max,tf_min,tf_cumule,df,idf,tf_idfmax,tf_idfmin,tf_idfcumule,polarite_negative,polarite_positive)";
 		sql_insert +="\n";
 		sql_insert += " VALUES " + this.toString();
 		return sql_insert;

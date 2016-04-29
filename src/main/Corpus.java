@@ -91,7 +91,11 @@ public class Corpus
 //				break;
 //		}
 		
-		
+		MotModel objMotmodel = new MotModel();
+		List<String> listWords = objMotmodel.getListMotsFromDb();
+		for(String word : listWords ){
+			System.out.println(word);
+		}
 		documents = new Document[2000];
 		words = new HashMap<String, Mot>();
 		crp_fnc = new Corpus_Function();
@@ -116,18 +120,20 @@ public class Corpus
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_LOAD AND STORE MOTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		System.out.println("find_words() : start\n");
 
-		crp_fnc.pause(5);
+//		crp_fnc.pause(5);
 		words = crp_fnc.find_words(documents);
-		System.out.println("find_words() : succeeded\n");
-		
-		crp_fnc.mots_Write(crp_fnc.words);
-		//crp_fnc.mots_Write_MYSQL(crp_fnc.words);
+//		System.out.println("find_words() : succeeded\n");
+//		
+//		crp_fnc.mots_Write(crp_fnc.words);
+//		crp_fnc.mots_Write_MYSQL(crp_fnc.words);
 
 
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 //		crp_fnc.pause(5);
-//		crp_fnc.boolean_model_Write_Arff();
+		crp_fnc.boolean_model_Write_Arff(listWords);
+		crp_fnc.termWeiting_tf_idf_Write_Arff(listWords);
+		crp_fnc.termWeiting_tf_idf_Write_Arff(listWords);
 //		System.out.println("boolean_model_Write_Arff() : succeeded\n");
 //
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
