@@ -69,7 +69,7 @@ public class Mot
 		this.setValue(mot.getValue());
 	}
 	
-	public Mot(int id, String value, int tf_max, int tf_min, int tf_cumule, int df, double idf, double tf_idfmax, double tf_idfmin, int polarite_negative, int polarite_positive){
+	public Mot(int id, String value, int tf_max, int tf_min, int tf_cumule, int df, double idf, double tf_idfmax,double tf_idfcumule, double tf_idfmin, int polarite_negative, int polarite_positive){
 		this();
 		this.value = value;
 		this.tf_max = tf_max;
@@ -79,10 +79,10 @@ public class Mot
 		this.idf = idf;
 		this.tf_idfmax = tf_idfmax;
 		this.tf_idfmin = tf_idfmin;
+		this.tf_idfcumule = tf_idfcumule;
 		this.polarite_negative = polarite_negative;
 		this.polarite_positive = polarite_positive;
 	}
-
 
 	public int getId() {
 		return id;
@@ -357,8 +357,7 @@ public class Mot
 	}
 
 	//Methode
-
-	public String toString()
+	public void updtMaxMinCumule()
 	{
 		for (int i=0;i<2000;i++)
 		{
@@ -387,6 +386,10 @@ public class Mot
 		tf_cumule+=tf[i];
 		tf_idfcumule+=tf_idf[i];
 		}
+	}
+	public String toString()
+	{
+		updtMaxMinCumule();
 		String mot_to_string="(";
 		//mot_to_string+=id +" , ";
 		mot_to_string+="\""+value+"\" , ";
