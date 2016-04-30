@@ -174,20 +174,22 @@ public class Corpus_Function
 			//Pour chaque mot s dans l'avis du document l
 			for(String s : tokens)
 			{
-				String s_remove_stop_caractere = remove_stop_caractere(s);
-				//Si le mot n'est pas encore présent dans le dictionnaire des mots "words"
-				if(s_remove_stop_caractere.length() >1)
+				String[] s_remove_stop_caractere = remove_stop_caractere(s);
+				for(int i=0;i<s_remove_stop_caractere.length;i++)
 				{
-					if(words.get(s_remove_stop_caractere) == null)
+				//Si le mot n'est pas encore présent dans le dictionnaire des mots "words"
+				if(s_remove_stop_caractere[i].length() > 1)
+				{
+					if(words.get(s_remove_stop_caractere[i]) == null)
 					{
 						//						writer.println(s_remove_stop_caractere);
-						mots+=s_remove_stop_caractere+"\n";
+						mots+=s_remove_stop_caractere[i]+"\n";
 						//On insert le mot s dans le dictionnaire des mots "words"
 
 
 
-						words.put(s_remove_stop_caractere,new Mot(s_remove_stop_caractere));
-						Mot m = words.get(s_remove_stop_caractere);
+						words.put(s_remove_stop_caractere[i],new Mot(s_remove_stop_caractere[i]));
+						Mot m = words.get(s_remove_stop_caractere[i]);
 						m.setPolarite(new int[2000]);
 						m.getPolarite()[l]=this.documents[l].getPolarite();
 //						m.incDf();
@@ -222,7 +224,7 @@ public class Corpus_Function
 					{
 
 						//Récupération de l'objet mot
-						Mot m = words.get(s_remove_stop_caractere);
+						Mot m = words.get(s_remove_stop_caractere[i]);
 						m.getPolarite()[l]=this.documents[l].getPolarite();
 //						m.incDf();
 						m.updtDf();
@@ -272,6 +274,7 @@ public class Corpus_Function
 					//					writer.close();
 				}
 
+			}
 			}
 		}
 		String file_name = "CorpusWord";
@@ -576,7 +579,7 @@ public class Corpus_Function
 		}
 		lines_booleanModel_Arff.add(("@attribute \"polarite\" {-1,1}"));
 		lines_booleanModel_Arff.add(data);
-		
+
 		booleanModel_Arff = booleanModel_Arff + "\n";
 		int l;
 //		for (l=0;l<1;l++)
@@ -657,12 +660,22 @@ public class Corpus_Function
 	* -------------------------------------------------------------------------------------------------------------------
 	*/
 
-	public String remove_stop_caractere(String p_crct)
+	public String[] remove_stop_caractere(String p_crct)
 	{
 		System.out.println("mot :"+p_crct);
-		String rslt = p_crct.replaceAll("[^a-zA-Z]", "").toLowerCase().trim();
+		String rslt = p_crct.replaceAll("[^a-zA-Z]", " ").toLowerCase().trim();
+		String[] rslt_tab = rslt.split(" ");
+		if (rslt_tab.length >1 )
+		{
+			System.out.println("rslt_tab.length : "+rslt_tab.length);
+			for(int i=0;i < rslt_tab.length; i++)
+			{
+				System.out.println(rslt_tab[i]);
+			}
+			//pause(2);
+		}
 		System.out.println("Remove_stop_caractere mot :"+rslt);
-		return rslt;
+		return rslt_tab;
 		//		Pattern p = Pattern.compile("[^a-zA-Z]");
 		//		Matcher m = p.matcher(p_crct);
 		//		System.out.println("mot :"+p_crct);

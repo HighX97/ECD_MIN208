@@ -98,6 +98,7 @@ public class JdbcCorpus
 		   int result = 0;
 		   try{
 			   stmt = conn.createStatement();
+			   System.out.println(sql);
 			   result = stmt.executeUpdate(sql);
 			   if(conn!=null){
 		            conn.close();
