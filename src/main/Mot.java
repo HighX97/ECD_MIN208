@@ -417,20 +417,20 @@ public class Mot
 		//mot_to_string+=id +" , ";
 		mot_to_string+="\""+value+"\" , ";
 		mot_to_string+=tf_max+" , ";
-		mot_to_string+=tf_min+" , ";
-		mot_to_string+=tf_cumule+" , ";
+		//mot_to_string+=tf_min+" , "; Information non pertinente
+		mot_to_string+=tf_cumule+" , "; // Si tf_cumule > df alors tf>1 au moins une fois
+										// Si tf_cumule = df alors tf==1 toujours
 		mot_to_string+=df+" , ";
 		mot_to_string+=idf+" , ";
 		mot_to_string+=tf_idfmax+" , ";
-		mot_to_string+=tf_idfmin+" , ";
+		//mot_to_string+=tf_idfmin+" , "; Information non pertinente
 		mot_to_string+=tf_idfcumule+" , ";
 		mot_to_string+=polarite_negative+" , ";
 		mot_to_string+=polarite_positive+")";
 		return mot_to_string;
 	}
-	public String insertSql()
+	public String insertSql(String nameTable)
 	{
-		String nameTable="Mots";
 		String sql_insert = "INSERT INTO "+nameTable;
 		sql_insert +="\n";
 		sql_insert +="(value,tf_max,tf_min,tf_cumule,df,idf,tf_idfmax,tf_idfmin,tf_idfcumule,polarite_negative,polarite_positive)";

@@ -574,8 +574,9 @@ public class Corpus_Function
 			lines_booleanModel_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" NUMERIC");
 					}
 		}
-		//				System.out.println(booleanModel_Arff);
+		lines_booleanModel_Arff.add(("@attribute \"polarite\" {-1,1}"));
 		lines_booleanModel_Arff.add(data);
+		
 		booleanModel_Arff = booleanModel_Arff + "\n";
 		int l;
 //		for (l=0;l<1;l++)
@@ -996,7 +997,7 @@ public class Corpus_Function
 		our_file_writer(lines, "mot_infos", "txt", output_path);
 	}
 
-	public  void mots_Write_MYSQL(Map<String, Mot> mots)
+	public  void mots_Write_MYSQL(Map<String, Mot> mots,String nameTable)
 	{
 		JdbcCorpus objJdbcCorpus = new JdbcCorpus();
 		objJdbcCorpus.testDb();
@@ -1005,7 +1006,7 @@ public class Corpus_Function
 		for(Entry<String, Mot> entry_s_m : mots.entrySet())
 		{
 			Mot mot = entry_s_m.getValue();
-			resultInsert = objJdbcCorpus.executeUpdate(mot.insertSql());
+			resultInsert = objJdbcCorpus.executeUpdate(mot.insertSql(nameTable));
 			System.out.println("resultInsert: " + resultInsert);
 		}
 	}

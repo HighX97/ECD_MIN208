@@ -98,12 +98,12 @@ public class Corpus
 		MyArrayListSql from = new MyArrayListSql();
 		from.add("Mots");
 		MyArrayListSql where = new MyArrayListSql();
-		where.add("tf_cumule>250");
+		where.add("tf_cumule<25");
 		String orderByPos = " (polarite_positive +  polarite_negative)";
 		String orderByNef = " -(polarite_positive +  polarite_negative)";
 		String sens = "desc";
 		int limit1 = 0;
-		int limit2 = 250;
+		int limit2 = 150;
 		List<String> listWords = objMotmodel.getListMotsFromDb(select, from, where, orderByPos, sens, limit1, limit2);
 		listWords.addAll((List<String>) objMotmodel.getListMotsFromDb(select, from, where, orderByNef, sens, limit1, limit2));
 		for(String word : listWords ){
@@ -138,7 +138,7 @@ public class Corpus
 //		System.out.println("find_words() : succeeded\n");
 //
 //		crp_fnc.mots_Write(crp_fnc.words);
-//		crp_fnc.mots_Write_MYSQL(crp_fnc.words);
+		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots");
 
 
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -477,7 +477,8 @@ public class Corpus
 		stopwords.add("the");
 
 //		crp_fnc.pause(5);
-//		crp_fnc.remove_stop_words(stopwords);
+		crp_fnc.remove_stop_words(stopwords);
+		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_ssw");
 //		System.out.println("remove_stop_words(stopwords) : succeeded\n");
 
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
