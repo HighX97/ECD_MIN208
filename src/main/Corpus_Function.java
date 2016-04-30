@@ -496,9 +496,9 @@ public class Corpus_Function
 //		for(Entry<String, Mot> entry_s_m : words.entrySet())
 //		{
 //			k++;
-//			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
-//			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
-//			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+//			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" NUMERIC"+"  "+entry_s_m.getValue().getIdf());
+//			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" NUMERIC";
+//			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" NUMERIC");
 //		}
 //		termWeiting_Arff = termWeiting_Arff + "\n";
 //		lines_termWeiting_Arff.add(data);
@@ -569,9 +569,9 @@ public class Corpus_Function
 			String mot = entry_s_m.getKey();
 			if(mots.contains(mot))
 					{
-			System.out.println("Mot : "+entry_s_m.getValue().getValue()+" STRING");
-			booleanModel_Arff = booleanModel_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
-			lines_booleanModel_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+			System.out.println("Mot : "+entry_s_m.getValue().getValue()+" NUMERIC");
+			booleanModel_Arff = booleanModel_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" NUMERIC";
+			lines_booleanModel_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" NUMERIC");
 					}
 		}
 		//				System.out.println(booleanModel_Arff);
@@ -579,13 +579,16 @@ public class Corpus_Function
 		booleanModel_Arff = booleanModel_Arff + "\n";
 		int l;
 //		for (l=0;l<1;l++)
-		for (l=0;l<10;l++)
+		for (l=0;l<documents.length;l++)
 		{
 			System.out.println(l);
 			int i=0;
 			String line="";
 			for(Entry<String, Mot> entry_s_m : words.entrySet())
 			{
+				String mot = entry_s_m.getKey();
+				if(mots.contains(mot))
+				{
 				//				if(l%10000 ==0)
 				//				{
 				//					System.out.println("Mot["+i+"/"+l+"] : "+entry_s_m.getValue().getValue());
@@ -623,14 +626,16 @@ public class Corpus_Function
 						//							System.out.println(line);
 					}
 				}
-				if (i == words.size()-1)
+				if (i == mots.size()-1)
 				{
+					line += ","+ (i+1) + " " + this.documents[l].getPolarite();
 					booleanModel_Arff = booleanModel_Arff +"}";
 					line = line +"}";
 					//						System.out.println(line);
 					//						pause(5);
 				}
 				i++;
+				}
 			}
 			lines_booleanModel_Arff.add(line);
 			System.out.println(line);
@@ -725,7 +730,7 @@ public class Corpus_Function
 		}
 	}
 
-	public void pause(double seconde)
+	public static void pause(double seconde)
 	{
 		try {
 			Thread.sleep((long) (seconde*1000));                 //5000 milliseconds is five second.
@@ -755,9 +760,9 @@ public class Corpus_Function
 			if(mots.contains(mot))
 					{
 				k++;
-				System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
-				termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
-				lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+				System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" NUMERIC"+"  "+entry_s_m.getValue().getIdf());
+				termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" NUMERIC";
+				lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" NUMERIC");
 					}
 		}
 		termWeiting_Arff = termWeiting_Arff + "\n";
@@ -771,6 +776,9 @@ public class Corpus_Function
 			String line="";
 			for(Entry<String, Mot> entry_s_m : words.entrySet())
 			{
+				String mot = entry_s_m.getKey();
+				if(mots.contains(mot))
+				{
 				if (entry_s_m.getValue().getTf_idf_Pos(l)>0)
 				{
 					System.out.println(entry_s_m.getValue().getValue()+"["+l+"] : tf_idf"+entry_s_m.getValue().getTf_idf_Pos(l));
@@ -793,7 +801,7 @@ public class Corpus_Function
 //						System.out.println(line);
 //					}
 				}
-				if (i == words.size()-1)
+				if (i == mots.size()-1)
 				{
 					//pause(2);
 					System.out.println("Coucou les amis");
@@ -804,6 +812,7 @@ public class Corpus_Function
 //					System.out.println(line);
 				}
 				i++;
+			}
 			}
 			lines_termWeiting_Arff.add(line);
 			System.out.println(line);
@@ -832,9 +841,9 @@ public class Corpus_Function
 			String mot = entry_s_m.getKey();
 			if(mots.contains(mot))
 					{
-			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" STRING"+"  "+entry_s_m.getValue().getIdf());
-			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" STRING";
-			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" STRING");
+			System.out.println("Mot["+k+"] : "+entry_s_m.getValue().getValue()+" NUMERIC"+"  "+entry_s_m.getValue().getIdf());
+			termWeiting_Arff = termWeiting_Arff + "\n" + attribute + " \""+entry_s_m.getKey()+"\" NUMERIC";
+			lines_termWeiting_Arff.add(attribute + " \""+entry_s_m.getKey()+"\" NUMERIC");
 					}
 		}
 		termWeiting_Arff = termWeiting_Arff + "\n";
@@ -848,6 +857,9 @@ public class Corpus_Function
 			String line="";
 			for(Entry<String, Mot> entry_s_m : words.entrySet())
 			{
+				String mot = entry_s_m.getKey();
+				if(mots.contains(mot))
+				{
 				if (entry_s_m.getValue().getTf_Pos(l)>0)
 				{
 					System.out.println(entry_s_m.getValue().getValue()+"["+l+"] : tf_idf"+entry_s_m.getValue().getTf_Pos(l));
@@ -870,7 +882,7 @@ public class Corpus_Function
 //						System.out.println(line);
 //					}
 				}
-				if (i == words.size()-1)
+				if (i == mots.size()-1)
 				{
 					//pause(2);
 					System.out.println("Coucou les amis");
@@ -881,6 +893,7 @@ public class Corpus_Function
 //					System.out.println(line);
 				}
 				i++;
+			}
 			}
 			lines_termWeiting_Arff.add(line);
 			System.out.println(line);
@@ -1002,7 +1015,7 @@ public class Corpus_Function
 		System.out.println("termWeiting_Write_Arff() : start succeded");
 		List<String> lines = new ArrayList<String>();
 		lines.add("@relation movies");
-		lines.add("@attribute att_avis STRING");
+		lines.add("@attribute att_avis NUMERIC");
 		lines.add("@attribute att_thought {-1,1}");
 		lines.add("@data");
 		int l;

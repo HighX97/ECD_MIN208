@@ -3,19 +3,68 @@ package db_JDBC;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import main.Mot;
+import com.mysql.jdbc.Statement;
 
-public class MotModel extends JdbcCorpus{
+import main.*;
+public class MotModel_Lowx extends JdbcCorpus{
+
+
+	public List<String> getListMotsFromDb(MyArrayListSql select, MyArrayListSql from,MyArrayListSql where, String orderBy,String sens, int limit1, int limit2)
+	{
+		ArrayList<String> words = new ArrayList<String>();
+		//String sqlTfCumle = "select * From Mots order by tf_cumule desc limit 100;"; //Document_terme_weiting_tf_idf_2016_04_29_22_53_09
+//		String sqlNegatif = "select * from Mots order by - (polarite_positive +  polarite_negative) desc limit 30;"; //Document_terme_weiting_tf_idf_2016_04_29_23_34_15.arff
+	//	String sql = "select * from Mots order by - (polarite_positive +  polarite_negative) desc limit 30;"; //Document_terme_weiting_tf_idf_2016_04_29_23_46_49.arff
+		String sql = "select "+select.toString()+" from "+from.toString()+" where "+where+" order by "+orderBy+" "+sens+" limit "+limit1+","+limit2+";";
+		System.out.println(sql);
+		Corpus_Function.pause(5);
+		ResultSet rs = null;
+	    Connection conn = this.getMysqlConnection();
+	    java.sql.Statement stmt = null;
+	    try{
+		   stmt = conn.createStatement();
+		   rs = stmt.executeQuery(sql);
+		   while(rs.next()){
+//				int id = rs.getInt("id");
+				String value = rs.getString("value");
+				words.add(value);
+		     }
+		   rs.close();
+		   if(conn!=null){
+			   conn.close();
+		   }
+		   stmt.close();
+	   }
+	   catch(SQLException se){
+	      //Handle errors for JDBC
+	      se.printStackTrace();
+	   }catch(Exception e){
+	      //Handle errors for Class.forName
+	      e.printStackTrace();
+	   }finally{
+	      //finally block used to close resources
+	      try{
+	         if(stmt!=null)
+	            conn.close();
+	      }catch(SQLException se){
+	      }// do nothing
+	      try{
+	         if(conn!=null)
+	            conn.close();
+	      }catch(SQLException se){
+	         se.printStackTrace();
+	      }//end finally try
+	   }//end try
+
+	   return words;
+	}
 	
-	
-	
-	public Map<String, Mot> getCollectionsMotsFromDb() 
+	public Map<String, Mot> getCollectionsMotsFromDb()
 	{
 		Map<String, Mot> words = new HashMap<String, Mot>();
 		//String sql = "SELECT * FROM db_CorpusECD.Mots;";
@@ -23,7 +72,7 @@ public class MotModel extends JdbcCorpus{
 		System.out.println("Avant impresion Mots");
 		ResultSet rs = null;
 	    Connection conn = this.getMysqlConnection();
-	    Statement stmt = null;
+	    java.sql.Statement stmt = null;
 	    try{
 		   stmt = conn.createStatement();
 		   rs = stmt.executeQuery(sql);
@@ -40,7 +89,7 @@ public class MotModel extends JdbcCorpus{
 				double tf_idfcumule = rs.getDouble("tf_idfcumule");
 				int polarite_negative = rs.getInt("polarite_negative");
 				int polarite_positive = rs.getInt("polarite_positive");
-		         
+
 		        Mot motObj = new Mot(
 	        		//id,
 		   			value,
@@ -83,17 +132,20 @@ public class MotModel extends JdbcCorpus{
 	         se.printStackTrace();
 	      }//end finally try
 	   }//end try
-		
+
 	   return words;
 	}
-	
-	public List<String> getListMotsFromDb() 
+
+	public List<String> getListMotsFromDb()
 	{
 		ArrayList<String> words = new ArrayList<String>();
-		String sql = "select * From Mots order by tf_cumule desc limit 500,500;";
+		//String sqlTfCumle = "select * From Mots order by tf_cumule desc limit 100;"; //Document_terme_weiting_tf_idf_2016_04_29_22_53_09
+//		String sqlNegatif = "select * from Mots order by - (polarite_positive +  polarite_negative) desc limit 30;"; //Document_terme_weiting_tf_idf_2016_04_29_23_34_15.arff
+	//	String sql = "select * from Mots order by - (polarite_positive +  polarite_negative) desc limit 30;"; //Document_terme_weiting_tf_idf_2016_04_29_23_46_49.arff
+	 String sql = "select * from Mots order by - (polarite_positive +  polarite_negative) desc limit 300,100;";
 		ResultSet rs = null;
 	    Connection conn = this.getMysqlConnection();
-	    Statement stmt = null;
+	    java.sql.Statement stmt = null;
 	    try{
 		   stmt = conn.createStatement();
 		   rs = stmt.executeQuery(sql);
@@ -128,7 +180,7 @@ public class MotModel extends JdbcCorpus{
 	         se.printStackTrace();
 	      }//end finally try
 	   }//end try
-		
+
 	   return words;
 	}
 }

@@ -27,7 +27,7 @@ import java.util.concurrent.Callable;
 
 import org.annolab.tt4j.TreeTaggerException;
 
-import db_JDBC.MotModel;
+import db_JDBC.MotModel_Lowx;
 
 //import weka.classifiers.Classifier;
 //import weka.classifiers.Evaluation;
@@ -63,10 +63,10 @@ public class Corpus
 //			System.out.println("Après lematisation:" + resultatLemmatisation1.size());
 //	        return;
 //	    }
-//		
+//
 //		MotModel objMotmodel = new MotModel();
 //		String option = "";
-//		
+//
 //		switch(option){
 //			case "getListMotsFromDb":
 //				List<String> listWords = objMotmodel.getListMotsFromDb();
@@ -78,7 +78,7 @@ public class Corpus
 //			case "CreateWordInsertions":
 //				crp_fnc = new Corpus_Function();
 //				List<Our_path_model> p = new ArrayList<Our_path_model>();
-//				
+//
 //				crp_fnc.words = objMotmodel.getCollectionsMotsFromDb();
 //				crp_fnc.input(p);
 //				crp_fnc.termWeiting_TF();
@@ -87,12 +87,25 @@ public class Corpus
 //				crp_fnc.termWeiting_Write_Arff(crp_fnc.words);
 //				return;
 //			default:
-//				
+//
 //				break;
 //		}
-		
-		MotModel objMotmodel = new MotModel();
-		List<String> listWords = objMotmodel.getListMotsFromDb();
+
+
+		MotModel_Lowx objMotmodel = new MotModel_Lowx();
+		MyArrayListSql select = new MyArrayListSql();
+		select.add("*");
+		MyArrayListSql from = new MyArrayListSql();
+		from.add("Mots");
+		MyArrayListSql where = new MyArrayListSql();
+		where.add("tf_cumule>250");
+		String orderByPos = " (polarite_positive +  polarite_negative)";
+		String orderByNef = " -(polarite_positive +  polarite_negative)";
+		String sens = "desc";
+		int limit1 = 0;
+		int limit2 = 250;
+		List<String> listWords = objMotmodel.getListMotsFromDb(select, from, where, orderByPos, sens, limit1, limit2);
+		listWords.addAll((List<String>) objMotmodel.getListMotsFromDb(select, from, where, orderByNef, sens, limit1, limit2));
 		for(String word : listWords ){
 			System.out.println(word);
 		}
@@ -108,7 +121,7 @@ public class Corpus
 		List<Our_path_model> p = new ArrayList<Our_path_model>();
 		documents = crp_fnc.input(p);
 		System.out.println("input() : succeeded\n");
-		
+
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_ARFF DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 //		System.out.println("documentw_Write_Arff() : start\n");
 //
@@ -123,7 +136,7 @@ public class Corpus
 //		crp_fnc.pause(5);
 		words = crp_fnc.find_words(documents);
 //		System.out.println("find_words() : succeeded\n");
-//		
+//
 //		crp_fnc.mots_Write(crp_fnc.words);
 //		crp_fnc.mots_Write_MYSQL(crp_fnc.words);
 
@@ -132,7 +145,7 @@ public class Corpus
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 //		crp_fnc.pause(5);
 		crp_fnc.boolean_model_Write_Arff(listWords);
-		crp_fnc.termWeiting_tf_idf_Write_Arff(listWords);
+		crp_fnc.termWeiting_tf_Write_Arff(listWords);
 		crp_fnc.termWeiting_tf_idf_Write_Arff(listWords);
 //		System.out.println("boolean_model_Write_Arff() : succeeded\n");
 //
@@ -488,7 +501,7 @@ public class Corpus
 //		crp_fnc.pause(5);
 //		crp_fnc.termWeiting_TF_IDF();
 //		System.out.println("termWeiting_TF_IDF() : succeeded\n");
-//		
+//
 //		crp_fnc.mots_Write(crp_fnc.words);
 //		//crp_fnc.mots_Write_MYSQL(crp_fnc.words);
 
