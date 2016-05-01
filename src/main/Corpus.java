@@ -91,19 +91,20 @@ public class Corpus
 //				break;
 //		}
 
-
+//
+		String tablename = "Mots_ssw";
 		MotModel_Lowx objMotmodel = new MotModel_Lowx();
 		MyArrayListSql select = new MyArrayListSql();
 		select.add("*");
 		MyArrayListSql from = new MyArrayListSql();
-		from.add("Mots");
+		from.add(tablename);
 		MyArrayListSql where = new MyArrayListSql();
-		where.add("tf_cumule<25");
-		String orderByPos = " (polarite_positive +  polarite_negative)";
-		String orderByNef = " -(polarite_positive +  polarite_negative)";
-		String sens = "desc";
+		where.add("tf_cumule>1");
+		String orderByPos = "+(polarite_positive+polarite_negative) desc, tf_idfcumule desc";
+		String orderByNef = "-(polarite_positive+polarite_negative) desc, tf_idfcumule desc";
+		String sens = "";
 		int limit1 = 0;
-		int limit2 = 150;
+		int limit2 = 1000;
 		List<String> listWords = objMotmodel.getListMotsFromDb(select, from, where, orderByPos, sens, limit1, limit2);
 		listWords.addAll((List<String>) objMotmodel.getListMotsFromDb(select, from, where, orderByNef, sens, limit1, limit2));
 		for(String word : listWords ){
@@ -119,6 +120,7 @@ public class Corpus
 
 		crp_fnc.pause(5);
 		List<Our_path_model> p = new ArrayList<Our_path_model>();
+		//crp_fnc.generation_corpus_lem();
 		documents = crp_fnc.input(p);
 		System.out.println("input() : succeeded\n");
 
@@ -138,19 +140,24 @@ public class Corpus
 	
 //		System.out.println("find_words() : succeeded\n");
 //
-		crp_fnc.mots_Write(crp_fnc.words);
+//		crp_fnc.mots_Write(crp_fnc.words);
 //		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots");
-		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_asw");
+//		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_asw");
 
 
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_WRITE BOOLEAN MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 //		crp_fnc.pause(5);
-//		crp_fnc.boolean_model_Write_Arff(listWords);
+		
 //		crp_fnc.termWeiting_tf_Write_Arff(listWords);
 //		crp_fnc.termWeiting_tf_idf_Write_Arff(listWords);
-//		System.out.println("boolean_model_Write_Arff() : succeeded\n");
-//
+////		crp_fnc.boolean_model_Write_Arff(listWords);
+		crp_fnc.write_Arff(listWords,"bool", tablename);
+		crp_fnc.write_Arff(listWords,"tf",tablename);
+		crp_fnc.write_Arff(listWords,"tf_idf",tablename);
+//		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_lem_morpho");
+		System.out.println("Write_Arff() : succeeded\n");
+		crp_fnc.pause(5);
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
@@ -480,7 +487,12 @@ public class Corpus
 
 //		crp_fnc.pause(5);
 		crp_fnc.remove_stop_words(stopwords);
-		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_ssw");
+//		Lemmatisation lem = new Lemmatisation();
+//		Map<String,String> rslt = lem.obtenirListLemattise(new ArrayList<String>(crp_fnc.words.keySet()));
+//		List<String> words_lem = new ArrayList<String>(rslt.values());
+//		crp_fnc.pause(5);
+//		crp_fnc.mots_Write_MYSQL(words_lem, "Mots_lem");
+		
 //		System.out.println("remove_stop_words(stopwords) : succeeded\n");
 
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

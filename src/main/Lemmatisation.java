@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.annolab.tt4j.*;
 //package org.annolab.tt4j;
 /**
+https://courses.washington.edu/hypertxt/csar-v02/penntable.html
 
 POS Tag	Description	Example
 CC	coordinating conjunction	and, but, or, &
@@ -74,32 +75,31 @@ $	currency symbol	$, £
  *
  */
 public class Lemmatisation {
-
-	private String treetaggerPath = "ressources/input/treetaggerLoic/";
-	private String treetaggerHome = treetaggerPath;
+	
+	private String treetaggerHome = "ressources/input/tree-tagger-linux-3.2";
+	//private String treetaggerHome = "ressources/input/tree-tagger-mac/";
 	//private String treetaggerModel = "treetagger/english-par-linux-3.2-utf8.bin";//tt.setModel("/opt/treetagger/models/english.par:iso8859-1");
-	private String treetaggermodelpath = treetaggerPath +"models/";
-	private String treetaggerModel = treetaggermodelpath+"en.par";//tt.setModel("/opt/treetagger/models/english.par:iso8859-1");
-
-
+	private String treetaggerModel = "ressources/input/treetaggerLoic/models/en.par";//tt.setModel("/opt/treetagger/models/english.par:iso8859-1");
+	
+	
 	public Lemmatisation(){
-
+		
 	}
-
+	
 	public HashMap<String, String> obtenirListLemattise(List<String> listeMots) throws IOException, TreeTaggerException{
-		HashMap<String, String> resultatLemmatisation = new HashMap<String, String>();
-
+		final HashMap<String, String> resultatLemmatisation = new HashMap<String, String>();
+		
 		System.setProperty("treetagger.home", this.treetaggerHome);
 	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
 	    try {
 	    	tt.setModel(this.treetaggerModel);
 	    	tt.setHandler(new TokenHandler<String>() {
 	        public void token(String token, String pos, String lemma) {
-	        	//if(resultatLemmatisation.get(lemma) == null){
+	        	if(resultatLemmatisation.get(lemma) == null){
 	        		System.out.println(token + "\t" + pos + "\t" + lemma);
 	        		//words.put(s_remove_stop_caractere,new Mot(s_remove_stop_caractere));
-		        	//resultatLemmatisation.put(lemma, lemma);
-		        //}
+		        	resultatLemmatisation.put(lemma, lemma);
+		        }
 	        	//resultatLemmatisation.add(lemma);
 	        }
 	      });
@@ -110,8 +110,38 @@ public class Lemmatisation {
 	    }
 	    return resultatLemmatisation;
 	}
-
-
+	
+	public String obtenirListLemattise(String lineDoc) throws IOException, TreeTaggerException{
+		final ArrayList<String> listResult = new ArrayList<String>();
+		String resultatLemmatisation = "";
+		lineDoc = lineDoc.replaceAll("  ", " ");
+		lineDoc = lineDoc.replaceAll("  ", " ");
+		String[] listeMots = lineDoc.split(" ");
+		
+		System.setProperty("treetagger.home", this.treetaggerHome);
+	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
+	    try {
+	    	tt.setModel(this.treetaggerModel);
+	    	tt.setHandler(new TokenHandler<String>() {
+	        public void token(String token, String pos, String lemma) {
+	        	listResult.add(lemma);
+		    }
+	      });
+	      tt.process(listeMots);
+	    }
+	    finally {
+	      tt.destroy();
+	    }
+	    for (String s : listResult)
+	    {
+	    	resultatLemmatisation += s + " ";
+	    }
+	    return resultatLemmatisation;
+	}
+	
+	
+	
+	
 	/**
 	 * @param listeMots
 	 * @param listeTreeTaggerTags
@@ -119,16 +149,49 @@ public class Lemmatisation {
 	 * @throws IOException
 	 * @throws TreeTaggerException
 	 */
-	public HashMap<String, String> obtenirListLemattise(List<String> listeMots, final List<String> listeTreeTaggerTags) throws IOException, TreeTaggerException{
+	public HashMap<String, String> obtenirListLemattiseInTagList(List<String> listeMots, final List<String> allowTreeTaggerTagsList) throws IOException, TreeTaggerException{
 		final HashMap<String, String> resultatLemmatisation = new HashMap<String, String>();
-
+		
+		System.setProperty("treetagger.home", this.treetaggerHome);
+	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
+	    try {
+	    	tt.setModel(this.treetaggerModel);
+	    	for(String tag : allowTreeTaggerTagsList ){
+				System.out.println(tag);
+			}
+	    	//System.out.println("asas");
+	    	tt.setHandler(new TokenHandler<String>() {
+	    		public void token(String token, String pos, String lemma) {
+		        	//Include only the tags in the list
+		        	if(resultatLemmatisation.get(lemma) == null && allowTreeTaggerTagsList.contains(pos)  ){
+		        		System.out.println(token + "\t" + pos + "\t" + lemma);
+		        		//words.put(s_remove_stop_caractere,new Mot(s_remove_stop_caractere));
+			        	resultatLemmatisation.put(lemma, lemma);
+			        }
+		        	//resultatLemmatisation.add(lemma);
+		        }
+	    	}
+	       );
+	       tt.process(listeMots );
+	    }
+	    finally {
+	      tt.destroy();
+	    }
+	    return resultatLemmatisation;
+	}
+	
+	public HashMap<String, String> obtenirListLemattiseNotInTagList(List<String> listeMots, final List<String> excludeTreeTaggerTagsList) throws IOException, TreeTaggerException{
+		final HashMap<String, String> resultatLemmatisation = new HashMap<String, String>();
+		
 		System.setProperty("treetagger.home", this.treetaggerHome);
 	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
 	    try {
 	    	tt.setModel(this.treetaggerModel);
 	    	tt.setHandler(new TokenHandler<String>() {
-	        public void token(String token, String pos, String lemma) {
-	        	if(resultatLemmatisation.get(lemma) == null && listeTreeTaggerTags.contains(pos)  ){
+	    	
+	    	public void token(String token, String pos, String lemma) {
+	        	//Include only the tags in the list
+	        	if(resultatLemmatisation.get(lemma) == null && (! excludeTreeTaggerTagsList.contains(pos) )  ){
 	        		System.out.println(token + "\t" + pos + "\t" + lemma);
 	        		//words.put(s_remove_stop_caractere,new Mot(s_remove_stop_caractere));
 		        	resultatLemmatisation.put(lemma, lemma);
@@ -143,7 +206,42 @@ public class Lemmatisation {
 	    }
 	    return resultatLemmatisation;
 	}
-
+	
+	public String obtenirListLemattiseNotInTagList(String lineDoc, final List<String> excludeTreeTaggerTagsList) throws IOException, TreeTaggerException{
+		final ArrayList<String> listResult = new ArrayList<String>();
+		String resultatLemmatisation = "";
+		lineDoc = lineDoc.replaceAll("  ", " ");
+		lineDoc = lineDoc.replaceAll("  ", " ");
+		String[] listeMots = lineDoc.split(" ");
+		
+		System.setProperty("treetagger.home", this.treetaggerHome);
+	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
+	    try {
+	    	tt.setModel(this.treetaggerModel);
+	    	tt.setHandler(new TokenHandler<String>() {
+	        public void token(String token, String pos, String lemma) {
+	        	System.out.println(token + "\t" + pos + "\t" + lemma);
+	        	if( (! excludeTreeTaggerTagsList.contains(pos) )  ){
+	        		listResult.add(lemma);
+	        		
+	        	}
+	        	else{
+	        		System.out.println("Exclude: " + lemma);
+		        }
+		    }
+	      });
+	      tt.process(listeMots);
+	    }
+	    finally {
+	      tt.destroy();
+	    }
+	    for (String s : listResult)
+	    {
+	    	resultatLemmatisation += s + " ";
+	    }
+	    return resultatLemmatisation;
+	}
+	
 	public void test() throws IOException, TreeTaggerException{
 		System.setProperty("treetagger.home", this.treetaggerHome);
 	    TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
