@@ -80,14 +80,9 @@ public class Corpus
 		words = new HashMap<String, Mot>();
 		crp_fnc = new Corpus_Function();
 		
-
-		List<Our_path_model> p = new ArrayList<Our_path_model>();		
+		documents = crp_fnc.input(csv_paths).get(1);
 		crp_fnc.generation_corpus_ssw(csv_paths);
 		crp_fnc.generation_corpus_lem(csv_paths);
-		
-		List<String> pathsCorpus = new ArrayList<>();
-		pathsCorpus.add("ressources/dataset.csv");
-		pathsCorpus.add("ressources/output/dataset_ssw_2016_05_01_20_13_59.csv");
 		List<String> excludeTreeTaggerTagsList = new ArrayList<String>();
 		excludeTreeTaggerTagsList.add("NP");
 		excludeTreeTaggerTagsList.add("NN");
@@ -98,8 +93,7 @@ public class Corpus
 //		excludeTreeTaggerTagsList.add("JJ");
 //		excludeTreeTaggerTagsList.add("JJR");
 //		excludeTreeTaggerTagsList.add("JJS"); 
-		crp_fnc.generation_corpus_lem_morpho(excludeTreeTaggerTagsList,pathsCorpus);
-		documents = crp_fnc.input(p);
+		crp_fnc.generation_corpus_lem_morpho(excludeTreeTaggerTagsList,csv_paths);
 		System.out.println("input() : succeeded\n");
 
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_ARFF DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");

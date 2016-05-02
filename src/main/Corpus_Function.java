@@ -492,10 +492,13 @@ public class Corpus_Function
 	}
 	
 	//Read input documents
-	public  Document[] input(List<Our_path_model> path_model)
+	public  List<Document[]> input(List<String> csv_paths)
 	{
+		List<Document[]> result = new ArrayList<Document[]>();
+		for(String path : csv_paths)
+		{
 		String csvFilePolarite = "ressources/labels.csv";
-		String csvFileAvis = "ressources/output/dataset_lem_morpho_NP_NN_NNS_NPS_SYM_SYM_JJ_JJR_JJS_2016_05_01_20_40_50.csv";
+		String csvFileAvis = path;
 		BufferedReader brPolarite = null;
 		BufferedReader brAvis = null;
 		String line = "";
@@ -580,9 +583,11 @@ public class Corpus_Function
 				}
 			}
 		}
+		result.add(documents);
 		System.out.println("Import suceeded");
-
-		return documents;
+		
+		}
+		return result;
 	}
 	/*
 	* -------------------------------------------------------------------------------------------------------------------
