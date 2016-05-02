@@ -1,6 +1,7 @@
 package main;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,6 +80,10 @@ public class Document
 	public String toString()
 	{
 		return "OPINION["+this.getId()+"] : "+this.getPolarite()+" "+this.getAvis();
+	}
+	public String write_Arff(List<String> mots, String tw) {
+		// TODO Auto-generated method stub
+		return "";
 	}
 
 

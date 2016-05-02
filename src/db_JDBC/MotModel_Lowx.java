@@ -14,15 +14,13 @@ import main.*;
 public class MotModel_Lowx extends JdbcCorpus{
 
 
-	public List<String> getListMotsFromDb(MyArrayListSql select, MyArrayListSql from,MyArrayListSql where, String orderBy,String sens, int limit1, int limit2)
+	public List<String> getListMotsFromDb
+	(MyArrayListSql select, MyArrayListSql from,MyArrayListSql where, String orderBy,String sens, int limit1, int limit2)
 	{
 		ArrayList<String> words = new ArrayList<String>();
-		//String sqlTfCumle = "select * From Mots order by tf_cumule desc limit 100;"; //Document_terme_weiting_tf_idf_2016_04_29_22_53_09
-//		String sqlNegatif = "select * from Mots order by - (polarite_positive +  polarite_negative) desc limit 30;"; //Document_terme_weiting_tf_idf_2016_04_29_23_34_15.arff
-	//	String sql = "select * from Mots order by - (polarite_positive +  polarite_negative) desc limit 30;"; //Document_terme_weiting_tf_idf_2016_04_29_23_46_49.arff
-		String sql = "select "+select.toString()+" from "+from.toString()+" where "+where+" order by "+orderBy+" "+sens+" limit "+limit1+","+limit2+";";
-		System.out.println(sql);
-		Corpus_Function.pause(5);
+		String sql = "select "+select.toString()
+				+" from "+from.toString()
+				+" where "+where+" order by "+orderBy+" "+sens+" limit "+limit1+","+limit2+";";
 		ResultSet rs = null;
 	    Connection conn = this.getMysqlConnection();
 	    java.sql.Statement stmt = null;
@@ -30,7 +28,6 @@ public class MotModel_Lowx extends JdbcCorpus{
 		   stmt = conn.createStatement();
 		   rs = stmt.executeQuery(sql);
 		   while(rs.next()){
-//				int id = rs.getInt("id");
 				String value = rs.getString("value");
 				words.add(value);
 		     }

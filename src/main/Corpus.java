@@ -43,84 +43,57 @@ public class Corpus
 	static public Map<String, Mot> words;
 	static public Corpus_Function crp_fnc;
 
-	/*
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	* -------------------------------------------------------------------------------------------------------------------
-	*/
-	//
-	//	public static void use(Corpus corpus)
-	//	{
-	//		corpus.
-	//	}
-
 	public static void main(String [] args) throws IOException, TreeTaggerException
 	{
-//		Lemmatisation objLemmatisation = new Lemmatisation();
-//		List<String> listeMotsTmp = Arrays.asList(new String[] { "sjahsjhk", "is", "has", "a" });
-//		HashMap<String, String> resultatLemmatisation1 = objLemmatisation.obtenirListLemattise(listeMotsTmp);
-//		if ( true ) {
-//			System.out.println("Après lematisation:" + resultatLemmatisation1.size());
-//	        return;
-//	    }
-//
-//		MotModel objMotmodel = new MotModel();
-//		String option = "";
-//
-//		switch(option){
-//			case "getListMotsFromDb":
-//				List<String> listWords = objMotmodel.getListMotsFromDb();
-//				for(String word : listWords ){
-//					System.out.println(word);
-//				}
-//				return;
-//				//break;
-//			case "CreateWordInsertions":
-//				crp_fnc = new Corpus_Function();
-//				List<Our_path_model> p = new ArrayList<Our_path_model>();
-//
-//				crp_fnc.words = objMotmodel.getCollectionsMotsFromDb();
-//				crp_fnc.input(p);
-//				crp_fnc.termWeiting_TF();
-//				crp_fnc.termWeiting_IDF();
-//				crp_fnc.termWeiting_TF_IDF();
-//				crp_fnc.termWeiting_Write_Arff(crp_fnc.words);
-//				return;
-//			default:
-//
-//				break;
+		String csvFileAvis = "ressources/dataset.csv";
+		String csvFileAvis_ssw = "ressources/output/dataset_ssw_2016_05_02_03_14_06.csv";
+		String csvFileAvis_lem = "ressources/output/dataset_lem_2016_05_01_03_15_39.csv";
+		String csvFileAvis_lem_morpho = "ECD_HMIN208/ressources/output/dataset_lem_morpho_test_2016_05_01_20_18_02.csv";
+		List <String> listWords =null;
+		String tablename = "";
+//		String tablename = "Mot";
+//		MotModel_Lowx objMotmodel = new MotModel_Lowx();
+//		MyArrayListSql select = new MyArrayListSql();
+//		select.add("value");
+//		MyArrayListSql from = new MyArrayListSql();
+//		from.add(tablename);
+//		MyArrayListSql where = new MyArrayListSql();
+//		where.add("tf_cumule>1");
+//		String orderByPos = "+(polarite_positive+polarite_negative) desc, tf_idfcumule desc";
+//		String orderByNef = "-(polarite_positive+polarite_negative) desc, tf_idfcumule desc";
+//		String sens = "";
+//		int limit1 = 0;
+//		int limit2 = 1000;
+//		listWords = objMotmodel.getListMotsFromDb(select, from, where, orderByPos, sens, limit1, limit2);
+//		listWords.addAll((List<String>) objMotmodel.getListMotsFromDb(select, from, where, orderByNef, sens, limit1, limit2));
+//		for(String word : listWords ){
+//			System.out.println(word);
 //		}
-
-//
-		String tablename = "Mots_ssw";
-		MotModel_Lowx objMotmodel = new MotModel_Lowx();
-		MyArrayListSql select = new MyArrayListSql();
-		select.add("*");
-		MyArrayListSql from = new MyArrayListSql();
-		from.add(tablename);
-		MyArrayListSql where = new MyArrayListSql();
-		where.add("tf_cumule>1");
-		String orderByPos = "+(polarite_positive+polarite_negative) desc, tf_idfcumule desc";
-		String orderByNef = "-(polarite_positive+polarite_negative) desc, tf_idfcumule desc";
-		String sens = "";
-		int limit1 = 0;
-		int limit2 = 1000;
-		List<String> listWords = objMotmodel.getListMotsFromDb(select, from, where, orderByPos, sens, limit1, limit2);
-		listWords.addAll((List<String>) objMotmodel.getListMotsFromDb(select, from, where, orderByNef, sens, limit1, limit2));
-		for(String word : listWords ){
-			System.out.println(word);
-		}
+		
+		
 		documents = new Document[2000];
 		words = new HashMap<String, Mot>();
 		crp_fnc = new Corpus_Function();
+		
 
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LOAD AND STORE DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~00_LOAD AND STORE DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		System.out.println("input() : start\n");
-
-		crp_fnc.pause(5);
-		List<Our_path_model> p = new ArrayList<Our_path_model>();
-		//crp_fnc.generation_corpus_lem();
+		List<Our_path_model> p = new ArrayList<Our_path_model>();		
+		crp_fnc.generation_corpus_ssw();
+		crp_fnc.generation_corpus_lem();
+		
+		List<String> pathsCorpus = new ArrayList<>();
+		pathsCorpus.add("ressources/dataset.csv");
+		pathsCorpus.add("ressources/output/dataset_ssw_2016_05_01_20_13_59.csv");
+		List<String> excludeTreeTaggerTagsList = new ArrayList<String>();
+		excludeTreeTaggerTagsList.add("NP");
+		excludeTreeTaggerTagsList.add("NN");
+		excludeTreeTaggerTagsList.add("NNS");
+		excludeTreeTaggerTagsList.add("NPS");
+		excludeTreeTaggerTagsList.add("SYM");
+		excludeTreeTaggerTagsList.add("SYM");
+		excludeTreeTaggerTagsList.add("JJ");
+		excludeTreeTaggerTagsList.add("JJR");
+		excludeTreeTaggerTagsList.add("JJS"); 
+		crp_fnc.generation_corpus_lem_morpho(excludeTreeTaggerTagsList,pathsCorpus);
 		documents = crp_fnc.input(p);
 		System.out.println("input() : succeeded\n");
 
@@ -138,10 +111,10 @@ public class Corpus
 //		crp_fnc.pause(5);
 		words = crp_fnc.find_words(documents);
 	
-//		System.out.println("find_words() : succeeded\n");
-//
+		System.out.println("find_words() : succeeded\n");
+
 //		crp_fnc.mots_Write(crp_fnc.words);
-//		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots");
+//		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_lem_morpho_2");
 //		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_asw");
 
 
@@ -152,12 +125,12 @@ public class Corpus
 //		crp_fnc.termWeiting_tf_Write_Arff(listWords);
 //		crp_fnc.termWeiting_tf_idf_Write_Arff(listWords);
 ////		crp_fnc.boolean_model_Write_Arff(listWords);
-		crp_fnc.write_Arff(listWords,"bool", tablename);
-		crp_fnc.write_Arff(listWords,"tf",tablename);
-		crp_fnc.write_Arff(listWords,"tf_idf",tablename);
-//		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_lem_morpho");
-		System.out.println("Write_Arff() : succeeded\n");
-		crp_fnc.pause(5);
+		crp_fnc.write_Arff(listWords,"bool", tablename, "bool"+"_corpus");
+		crp_fnc.write_Arff(listWords,"tf",tablename, "tf"+"_corpus");
+		crp_fnc.write_Arff(listWords,"tf_idf",tablename, "tf_idf"+"_corpus");
+////		crp_fnc.mots_Write_MYSQL(crp_fnc.words, "Mots_lem_morpho");
+//		System.out.println("Write_Arff() : succeeded\n");
+//		crp_fnc.pause(5);
 //		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_WRITE TERMWEITING MODEL ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 

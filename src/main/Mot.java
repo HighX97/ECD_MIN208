@@ -11,6 +11,10 @@ public class Mot
 	//Member
 	private int id;
 	private String value;
+	private boolean[] bool;
+	private int[] tf;
+	private int[] polarite;
+	private double[] tf_idf;
 	private int tf_max;
 	private int tf_min;
 	private int tf_cumule;
@@ -21,14 +25,10 @@ public class Mot
 	private double tf_idfcumule;
 	private int polarite_negative;
 	private int polarite_positive;
-
-
-	private boolean[] boolMod; Our_occurence[] occurrence;
-	private int[] tf;
-	private double[] tf_idf;
+	
 	private int occurrenceTotal;
 	
-	private int[] polarite;
+	
 
 	//Classe
 	private static int count=0;
@@ -38,8 +38,7 @@ public class Mot
 	{
 		this.setId(++count);
 		setOccurrenceTotal(0);
-		occurrence=new Our_occurence[2000];
-		boolMod = new boolean[2000];
+		bool = new boolean[2000];
 		tf=new int[2000];
 		tf_idf=new double[2000];
 		df=0;
@@ -137,29 +136,6 @@ public class Mot
 	public void setIdf(double idf) {
 		this.idf = idf;
 	}
-
-	public Our_occurence[] getOccurrence() {
-		return occurrence;
-	}
-
-	public Our_occurence getOccurrencePos(int pos) {
-		return occurrence[pos];
-	}
-
-	public void setOccurrencePos(Our_occurence occurrence, int pos)
-	{
-		this.occurrence[pos] = occurrence;
-		this.setOccurrenceTotal(this.getOccurrenceTotal()+occurrence.getValue());
-	}
-
-	public void setOccurrence(Our_occurence[] occurrence) {
-		this.occurrence = occurrence;
-	}
-	public void innOccurrence(int pos)
-	{
-		this.occurrence[pos].setValue(this.occurrence[pos].getValue() + 1);
-		incOccurrenceTotal();
-	}
 	
 	public double[] getTf_idf() {
 		return tf_idf;
@@ -201,11 +177,11 @@ public class Mot
 	}
 
 	public boolean[] getBoolMod() {
-		return boolMod;
+		return bool;
 	}
 
 	public int getBoolMod_Pos_Int(int pos) {
-		if (boolMod[pos])
+		if (bool[pos])
 		{
 			return 1;
 		}
@@ -213,8 +189,8 @@ public class Mot
 		return 0;
 	}
 
-	public void setBoolMod(boolean[] boolMod) {
-		this.boolMod = boolMod;
+	public void setBoolMod(boolean[] bool) {
+		this.bool = bool;
 	}
 
 		public int[] getPolarite() {
@@ -471,6 +447,14 @@ public class Mot
 		{
 			updIDF();
 		}
+	}
+
+	public boolean[] getBool() {
+		return bool;
+	}
+
+	public void setBool(boolean[] bool) {
+		this.bool = bool;
 	}
 
 

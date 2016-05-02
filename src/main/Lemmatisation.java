@@ -95,8 +95,13 @@ public class Lemmatisation {
 	    	tt.setModel(this.treetaggerModel);
 	    	tt.setHandler(new TokenHandler<String>() {
 	        public void token(String token, String pos, String lemma) {
-	        	if(resultatLemmatisation.get(lemma) == null){
-	        		System.out.println(token + "\t" + pos + "\t" + lemma);
+	        	if(resultatLemmatisation.get(lemma) == null)
+	        	{
+	        		if(lemma.length() <= 2)
+	        		{
+	        			System.out.println(token + "\t" + pos + "\t" + lemma);
+	        		}
+	        		
 	        		//words.put(s_remove_stop_caractere,new Mot(s_remove_stop_caractere));
 		        	resultatLemmatisation.put(lemma, lemma);
 		        }
@@ -220,13 +225,23 @@ public class Lemmatisation {
 	    	tt.setModel(this.treetaggerModel);
 	    	tt.setHandler(new TokenHandler<String>() {
 	        public void token(String token, String pos, String lemma) {
-	        	System.out.println(token + "\t" + pos + "\t" + lemma);
+
 	        	if( (! excludeTreeTaggerTagsList.contains(pos) )  ){
+		        	if(token.length() == 1)
+		        	{
+		        		System.out.println(token + "\t" + pos + "\t" + lemma);
+		        		
+		        	}
+		        	if(pos.equalsIgnoreCase("NNS"))
+		        	{
+		        		System.out.println(token + "\t" + pos + "\t" + lemma);
+		        	
+		        	}
 	        		listResult.add(lemma);
 	        		
 	        	}
 	        	else{
-	        		System.out.println("Exclude: " + lemma);
+	        		//System.out.println("Exclude: " + lemma);
 		        }
 		    }
 	      });
