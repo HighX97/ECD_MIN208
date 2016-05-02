@@ -54,15 +54,14 @@ public class Corpus_Function
 	* -------------------------------------------------------------------------------------------------------------------
 	*/
 
-	public void generation_corpus_lem(List<String> list_paths) throws TreeTaggerException
+	public void generation_corpus_lem(List<String> csv_paths) throws TreeTaggerException
 	{
-		for(String path : list_paths)
-		{
 			BufferedReader br = null;
 			String line = "";
 			String cvsSplitBy = "\n";
 			Lemmatisation lem = new Lemmatisation();
-
+			for(String path : csv_paths )
+			{
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORT DATA FROM DATASET.CSV~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 		//Ouverture d'un bloc try_catch
@@ -74,15 +73,6 @@ public class Corpus_Function
 			//Pour chaque ligne du buffer
 			List<String> lines_Write_Arff = new ArrayList<String>();
 			List<String> excludeTreeTaggerTagsList = new ArrayList<String>();
-			excludeTreeTaggerTagsList.add("NP");
-			excludeTreeTaggerTagsList.add("NN");
-			excludeTreeTaggerTagsList.add("NNS");
-			excludeTreeTaggerTagsList.add("NPS");
-			excludeTreeTaggerTagsList.add("SYM");
-			excludeTreeTaggerTagsList.add("SYM");
-			excludeTreeTaggerTagsList.add("JJ");
-			excludeTreeTaggerTagsList.add("JJR");
-			excludeTreeTaggerTagsList.add("JJS");
 			String listTag = "";
 			for (String s : excludeTreeTaggerTagsList)
 			{
@@ -100,7 +90,7 @@ public class Corpus_Function
 				System.out.println(k+" : "+line_lem);
 				lines_Write_Arff.add(line_lem);			
 			}
-			our_file_writer(lines_Write_Arff, "dataset_lem_morpho"+listTag, ".csv", output_path);
+			our_file_writer(lines_Write_Arff, "dataset_lem", ".csv", output_path);
 		}
 		catch (FileNotFoundException e) 	//Document non trouvé : path incorrecte
 		{
@@ -110,7 +100,7 @@ public class Corpus_Function
 		{
 			e.printStackTrace();
 		}
-		}
+			}
 	}
 	public void generation_corpus_ssw(List<String> csv_paths, List<String> stopwords ) 
 	{
@@ -174,12 +164,9 @@ public class Corpus_Function
 	}
 	
 	//Read input documents
-	public  List<Document[]> input(List<String> csv_paths)
+	public  Document[] input(String path)
 	{
-		List<Document[]> result = new ArrayList<Document[]>();
-		for(String path : csv_paths)
-		{
-		String csvFilePolarite = "ressources/labels.csv";
+		String csvFilePolarite = "ressources/input/corpus/labels.csv";
 		String csvFileAvis = path;
 		BufferedReader brPolarite = null;
 		BufferedReader brAvis = null;
@@ -265,12 +252,9 @@ public class Corpus_Function
 				}
 			}
 		}
-		result.add(documents);
 		System.out.println("Import suceeded");
-		pause(2);
 		
-		}
-		return result;
+		return documents;
 	}
 	/*
 	* -------------------------------------------------------------------------------------------------------------------

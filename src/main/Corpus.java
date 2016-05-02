@@ -368,9 +368,9 @@ public class Corpus
 		stopwords.add("the");
 		//------------------------------------------------------------------------
 		List<String> csv_paths=new ArrayList<String>();
-		String csvFileAvis = "ressources/dataset.csv";
+		String csvFileAvis = "ressources/input/corpus/dataset.csv";
 		csv_paths.add(csvFileAvis);
-//		String csvFileAvis_ssw = "ressources/output/dataset_ssw_2016_05_02_03_14_06.csv";
+//		String csvFileAvis_ssw = "ressources/output/ECD_HMIN208/ressources/dataset_ssw.csv";
 //		csv_paths.add(csvFileAvis_ssw);
 //		String csvFileAvis_lem = "ressources/output/dataset_lem_2016_05_01_03_15_39.csv";
 //		csv_paths.add(csvFileAvis_lem);
@@ -402,9 +402,11 @@ public class Corpus
 		words = new HashMap<String, Mot>();
 		crp_fnc = new Corpus_Function();
 		
-		documents = crp_fnc.input(csv_paths).get(0);
+		documents = crp_fnc.input(csvFileAvis);
 		crp_fnc.generation_corpus_ssw(csv_paths,stopwords);
+		Corpus_Function.pause(5);
 		crp_fnc.generation_corpus_lem(csv_paths);
+		Corpus_Function.pause(5);
 		List<String> excludeTreeTaggerTagsList = new ArrayList<String>();
 		excludeTreeTaggerTagsList.add("NP");
 		excludeTreeTaggerTagsList.add("NN");
@@ -416,6 +418,7 @@ public class Corpus
 //		excludeTreeTaggerTagsList.add("JJR");
 //		excludeTreeTaggerTagsList.add("JJS"); 
 		crp_fnc.generation_corpus_lem_morpho(excludeTreeTaggerTagsList,csv_paths);
+		Corpus_Function.pause(5);
 		System.out.println("input() : succeeded\n");
 
 //		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~01_ARFF DOCUMENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
