@@ -463,7 +463,6 @@ public class Corpus
 		stopwords.add("yourselves");
 		stopwords.add("the");
 
-//		crp_fnc.pause(5);
 		crp_fnc.remove_stop_words(stopwords);
 //		Lemmatisation lem = new Lemmatisation();
 //		Map<String,String> rslt = lem.obtenirListLemattise(new ArrayList<String>(crp_fnc.words.keySet()));
@@ -472,52 +471,6 @@ public class Corpus
 //		crp_fnc.mots_Write_MYSQL(words_lem, "Mots_lem");
 		
 //		System.out.println("remove_stop_words(stopwords) : succeeded\n");
-
-//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_01_CALCULE TERME FREQUENCY~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-//		System.out.println("termWeiting_TF() : start\n");
-//		crp_fnc.pause(5);
-//		crp_fnc.termWeiting_TF();
-//		System.out.println("termWeiting_TF() : succeeded\n");
-//
-//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CALCULE IDF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_02_CALCULE INVERSE DOCUMENT FREQUENCY~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-//
-//		System.out.println("termWeiting_IDF() : start\n");
-//		crp_fnc.pause(5);
-//		crp_fnc.termWeiting_IDF();
-//		System.out.println("termWeiting_IDF() : succeeded\n");
-//
-//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CALCULE TDF_IDF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_03_TF-IDF WEIGHTING~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-//		System.out.println("termWeiting_TF_IDF() : start\n");
-//		crp_fnc.pause(5);
-//		crp_fnc.termWeiting_TF_IDF();
-//		System.out.println("termWeiting_TF_IDF() : succeeded\n");
-//
-//		crp_fnc.mots_Write(crp_fnc.words);
-//		//crp_fnc.mots_Write_MYSQL(crp_fnc.words);
-
-
-//		//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DOCUMENT LENGTH NORMALIZATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_04_DOCUMENT LENGTH NORMALIZATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-//		crp_fnc.termWeiting_Doc_Length_Norlamisation();
-//		crp_fnc.pause(5);
-
-		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~02_05_WRITE TERMWEITING ARFF FILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-//		System.out.println("termWeiting_Write_Arff() : start\n");
-//		crp_fnc.pause(5);
-//		crp_fnc.termWeiting_Write_Arff();
-//		System.out.println("termWeiting_Write_Arff() : succeeded\n");
-		//
-		//		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Weka~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~03_WEKA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-//		System.out.println("weka_exemple00() : start\n");
-//		crp_fnc.pause(5);
-//		 crp_fnc.weka();
-//		System.out.println("weka_exemple00() : succeeded\n");
-
 
 		System.out.println("\n==============================================================" +
 				"\t\t" +
