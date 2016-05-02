@@ -95,9 +95,9 @@ public class Corpus
 		excludeTreeTaggerTagsList.add("NPS");
 		excludeTreeTaggerTagsList.add("SYM");
 		excludeTreeTaggerTagsList.add("SYM");
-		excludeTreeTaggerTagsList.add("JJ");
-		excludeTreeTaggerTagsList.add("JJR");
-		excludeTreeTaggerTagsList.add("JJS"); 
+//		excludeTreeTaggerTagsList.add("JJ");
+//		excludeTreeTaggerTagsList.add("JJR");
+//		excludeTreeTaggerTagsList.add("JJS"); 
 		crp_fnc.generation_corpus_lem_morpho(excludeTreeTaggerTagsList,pathsCorpus);
 		documents = crp_fnc.input(p);
 		System.out.println("input() : succeeded\n");
