@@ -45,10 +45,15 @@ public class Corpus
 
 	public static void main(String [] args) throws IOException, TreeTaggerException
 	{
+		List<String> csv_paths=new ArrayList<String>();
 		String csvFileAvis = "ressources/dataset.csv";
+		csv_paths.add(csvFileAvis);
 		String csvFileAvis_ssw = "ressources/output/dataset_ssw_2016_05_02_03_14_06.csv";
+		csv_paths.add(csvFileAvis_ssw);
 		String csvFileAvis_lem = "ressources/output/dataset_lem_2016_05_01_03_15_39.csv";
+		csv_paths.add(csvFileAvis_lem);
 		String csvFileAvis_lem_morpho = "ECD_HMIN208/ressources/output/dataset_lem_morpho_test_2016_05_01_20_18_02.csv";
+		csv_paths.add(csvFileAvis_lem_morpho);
 		List <String> listWords =null;
 		String tablename = "";
 //		String tablename = "Mot";
@@ -77,8 +82,8 @@ public class Corpus
 		
 
 		List<Our_path_model> p = new ArrayList<Our_path_model>();		
-		crp_fnc.generation_corpus_ssw();
-		crp_fnc.generation_corpus_lem();
+		crp_fnc.generation_corpus_ssw(csv_paths);
+		crp_fnc.generation_corpus_lem(csv_paths);
 		
 		List<String> pathsCorpus = new ArrayList<>();
 		pathsCorpus.add("ressources/dataset.csv");

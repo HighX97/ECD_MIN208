@@ -54,19 +54,21 @@ public class Corpus_Function
 	* -------------------------------------------------------------------------------------------------------------------
 	*/
 
-	public void generation_corpus_lem() throws TreeTaggerException
+	public void generation_corpus_lem(List<String> list_paths) throws TreeTaggerException
 	{
-	BufferedReader brAvis = null;
-		String line = "";
-		String cvsSplitBy = "\n";
-		Lemmatisation lem = new Lemmatisation();
+		for(String path : list_paths)
+		{
+			BufferedReader br = null;
+			String line = "";
+			String cvsSplitBy = "\n";
+			Lemmatisation lem = new Lemmatisation();
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORT DATA FROM DATASET.CSV~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 		//Ouverture d'un bloc try_catch
 		try {
 			//Import des données brut dans un buffer
-			brAvis = new BufferedReader(new FileReader(csvFileAvis));
+			br = new BufferedReader(new FileReader(path));
 			//k : numero ligne
 			int k=0;
 			//Pour chaque ligne du buffer
@@ -86,21 +88,16 @@ public class Corpus_Function
 			{
 				listTag+="_"+s;
 			}
-			while ((line = brAvis.readLine()) != null)
+			while ((line = br.readLine()) != null)
 			{
 				k++;
 				String delims = "[ ]+";
 				String[] tokens = remove_stop_caractere(line.toLowerCase());
-				//String[] tokens = line.toLowerCase().split(delims);
 				String line_lem ="";
 				//Pour chaque mot s dans l'avis du document l			
-				System.out.println(k+" : "+line);	
-				//line_lem = lem.obtenirListLemattise(line);
-				
-				
+				System.out.println(k+" : "+line);			
 				line_lem = lem.obtenirListLemattiseNotInTagList(line, excludeTreeTaggerTagsList);
 				System.out.println(k+" : "+line_lem);
-				//pause(2);
 				lines_Write_Arff.add(line_lem);			
 			}
 			our_file_writer(lines_Write_Arff, "dataset_lem_morpho"+listTag, ".csv", output_path);
@@ -112,6 +109,7 @@ public class Corpus_Function
 		catch (IOException e) 				//Exception d'entrée sortie
 		{
 			e.printStackTrace();
+		}
 		}
 	}
 	public void generation_corpus_ssw()
@@ -1050,5 +1048,10 @@ public class Corpus_Function
 		}
 		
 	}
+	}
+
+	public void generation_corpus_ssw(List<String> csv_paths) {
+		// TODO Auto-generated method stub
+		
 	}
 }
